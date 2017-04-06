@@ -34,7 +34,7 @@ function getColor() {
  * @param floors a list of BeaconFloor objects
  * @param beacons the list of beacons
  **/
-function BeaconMap(floors, beacons, broadcasters) {
+function BeaconMap(floors, broadcasters, beacons) {
 	var beaconMap = this;
 	this.canvas = canvas;
 	this.floors = floors;
@@ -58,7 +58,7 @@ function BeaconMap(floors, beacons, broadcasters) {
  * @param rect the area covered by this floor (relative to beacons)
  * @param beacons the list of beacons
  */
-function BeaconFloor(floorName, image, rect, beacons, broadcasters) {
+function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	this.floorName = floorName;
 	this.image = image;
 	this.rect = rect;
@@ -83,7 +83,9 @@ function BeaconFloor(floorName, image, rect, beacons, broadcasters) {
 		//render broadcaster by broadcaster
 		for (var i = 0; i < Object.keys(broadcasters).length; i++){
 			var broadcaster = broadcasters[Object.keys(broadcasters)[i]];
-			renderBroadcaster(broadcaster, context);
+			if (broadcaster.floor === floorName) {
+				renderBroadcaster(broadcaster, context);
+			}
 		}
 
 		context.restore();
