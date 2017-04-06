@@ -1,25 +1,14 @@
-require('angular');
-require('angular-material');
-require('ui-router');
-
 //a list of clients that might report populations on the 'map'
 var socket = io();
+
+broadcasterRegistry = {};
+beaconRegistry = {};
 
 // Handle socket events here
 //--------------------------
 // Adds to the debug list
-socket.on('debug', data => {
-    var time = new Date();
-    $('#debugLogList').append('<div>' + time + ': ' + data.type + ' | ' + data.msg + '</div>');
-
-    if (data.type === 'UPDATE') {
-        console.log(data);
-        var msg = JSON.parse(data.msg);
-        if (!clients[data.client]) clients[data.client] = {};
-        clients[data.client].count = msg.count;
-        clients[data.client].max = msg.max;
-        render();
-    }
+socket.on('broadcaster', data => {
+    console.log(data);
 });
 
 (function(){
@@ -50,4 +39,10 @@ socket.on('debug', data => {
             controller: 'broadcastersController'
         });
     }]);
+
+    app.run([
+        '$state',
+        function ($state) {
+            $state.go('map');
+        }]);
 })();

@@ -6,18 +6,17 @@
  * 
  * Refer to the portions surrounded by --- for points of interest
  */
-var express = require('express'),
-    app = express();
-var pug = require('pug');
+var express = require('express');
+var app = express();
 var sockets = require('socket.io');
 var path = require('path');
+var http = require('pug');
+
+var server;
+var io;
 
 var conf = require(path.join(__dirname, 'config'));
 var internals = require(path.join(__dirname, 'internals'));
-
-// -- Setup the application
-setupExpress();
-setupSocket();
 
 function bytes2String(bytes) {
     var i = 0;
@@ -29,153 +28,50 @@ function bytes2String(bytes) {
     return result;
 }
 
-// -- Socket Handler
-// Here is where you should handle socket/mqtt events
-// The mqtt object should allow you to interface with the MQTT broker through 
-// events. Refer to the documentation for more info 
-// -> https://github.com/mcollina/mosca/wiki/Mosca-basic-usage
-// ----------------------------------------------------------------------------
+function setupSocket() {
+    server = require('http').createServer(app);
+    io = sockets(server);
 
-//stores counters for each source
-counters = {};
-
-function socket_handler(socket, mqtt) {
-    // Called when a client connects
-    mqtt.on('clientConnected', client => {
-        console.log("Client Connected: " + client.id);
-        socket.emit('debug', {
-            type: 'CLIENT',
-            msg: '{"connected": "true", "clientId": "' + client.id + '"}'
-        });
+    // Setup the internals
+    io.on('connection', socket => {
+        //get client up to date on broadcasters
+        for (var i = 0; i < Object.keys(broadcasterRegistry).length; i++){
+            var key = Object.keys(broadcasterRegistry)[i];
+            socket.emit('broadcaster', JSON.stringify(broadcasterRegistry[key]));
+        }
+        //get client up to date on beacons
+        for (var i = 0; i < Object.keys(beaconRegistry).length; i++) {
+            var key = Object.keys(beaconRegistry)[i];
+            socket.emit('beacon', JSON.stringify(beaconRegistry[key]));
+        }
     });
 
-    // Called when a client disconnects
-    mqtt.on('clientDisconnected', client => {
-        console.log("Client Disconnected: " + client.id);
-        socket.emit('debug', {
-            type: 'CLIENT',
-            msg: '{"connected": "false", "clientId": "' + client.id + '"'
-        });
-    });
-
-    // Called when a client publishes data
-    mqtt.on('published', (data, client) => {
-        console.log('client: ' + client)
-        if (!client) return;
-        console.log('[Publication] Client: ' + client.id + ', Published: ' + JSON.stringify(data));
-
-        //if there isn't a counter for this client yet, make one
-        if (!counters[client.id]) counters[client.id] = {
-            count: 0,
-            max: 0
-        };
-
-        //get the payload as a string
-        message = data.payload.toString().trim();
-
-        socket.emit('debug', {
-            type: 'UPDATE',
-            client: client.id,
-            msg: message
-        });
-        return;
-
-        socket.emit('debug', {
-            type: 'PUBLISH',
-            msg: '{ "client": "' + client.id + '", "published" : "' + message + '""}'
-        });
-    });
-
-    // Called when a client subscribes
-    mqtt.on('subscribed', (topic, client) => {
-        if (!client) return;
-
-        socket.emit('debug', {
-            type: 'SUBSCRIBE',
-            msg: 'Client "' + client.id + '" subscribed to "' + topic + '"'
-        });
-    });
-
-    // Called when a client unsubscribes
-    mqtt.on('unsubscribed', (topic, client) => {
-        if (!client) return;
-
-        socket.emit('debug', {
-            type: 'SUBSCRIBE',
-            msg: 'Client "' + client.id + '" unsubscribed from "' + topic + '"'
-        });
-    });
-}
-// ----------------------------------------------------------------------------
-
-var broadcasterRegistry = {};
-
-broadcasterRegistry['175'] = {
-    room: 1,
-    floor: 'ground'
-};
-
-broadcasterRegistry['387'] = {
-    room: 2,
-    floor: 'ground'
-};
-
-broadcasterRegistry['615'] = {
-    room: 3,
-    floor: 'ground'
-};
-
-broadcasterRegistry['614'] = {
-    room: 4,
-    floor: 'ground'
-};
-
-broadcasterRegistry['026'] = {
-    room: 5,
-    floor: 'ground'
-};
-
-//an object to hold the beacons
-var beaconRegistry = {};
-
-
-beaconRegistry['587'] = {
-    broadcaster: '026'
-};
-
-function publishBeacon(uid) {
-    if (typeof(beacons[uid]) === "undefined") {
-        console.log('no such beacon');
-        return;
-    }
-    io.emit('debug', {
-        type: 'POST',
-        client: uid,
-        msg: '{"type": "ANDROID", "count": "' + beacons[uid] + '", "max": "3"}'
+    server.listen(conf.PORT, conf.HOST, () => {
+        console.log("Listening on: " + conf.HOST + ":" + conf.PORT);
     });
 }
 
-// Helper functions
 function setupExpress() {
-    app.set('view engine', 'pug'); // Set express to use pug for rendering HTML
+    app.set('view engine', 'pug');
 
     // Setup the 'public' folder to be statically accessable
     var publicDir = path.join(__dirname, 'public');
     app.use(express.static(publicDir));
-
+    app.use(express.static('views'));
+    app.use(express.static('node_modules'));
     // Setup the paths (Insert any other needed paths here)
     // ------------------------------------------------------------------------
     // Home page
     app.get('/', (req, res) => {
         res.render('index', {
-            title: 'MQTT Tracker'
+            title: 'MediLoc'
         });
     });
 
     app.post('/found', (req, res) => {
         var broadcaster = req.query.uid;
         var beacon = req.query.beacon;
-        console.log("found " + beacon  + "count: "+ beacons[beacon]);
+        console.log("found " + beacon  + "at: " + broadcaster);
         publishBeacon(beacon);
     });
 
@@ -212,8 +108,6 @@ function setupExpress() {
         });
     });
 
-    // ------------------------------------------------------------------------
-
     // Handle killing the server
     process.on('SIGINT', () => {
         internals.stop();
@@ -221,21 +115,79 @@ function setupExpress() {
     });
 }
 
-var server;
-var io;
+// -- Socket Handler
+// Here is where you should handle socket/mqtt events
+// The mqtt object should allow you to interface with the MQTT broker through 
+// events. Refer to the documentation for more info 
+// -> https://github.com/mcollina/mosca/wiki/Mosca-basic-usage
+// ----------------------------------------------------------------------------
 
-function setupSocket() {
-    server = require('http').createServer(app);
-    io = sockets(server);
+//Hash map of (id, broadcaster) pairs
+var broadcasterRegistry = {};
 
-    // Setup the internals
-    internals.start(mqtt => {
-        io.on('connection', socket => {
-            socket_handler(socket, mqtt)
-        });
-    });
 
-    server.listen(conf.PORT, conf.HOST, () => {
-        console.log("Listening on: " + conf.HOST + ":" + conf.PORT);
+//some default stuff
+broadcasterRegistry['175'] = {
+    id: '175',
+    room: 1,
+    floor: 'ground',
+    x: 100,
+    y: 100
+};
+
+broadcasterRegistry['387'] = {
+    id: '387',
+    room: 2,
+    floor: 'ground',
+    x: 200, 
+    y:100
+};
+
+broadcasterRegistry['615'] = {
+    id: '615',
+    room: 3,
+    floor: 'ground',
+    x: 300, 
+    y:100
+};
+
+broadcasterRegistry['614'] = {
+    id: '614',
+    room: 4,
+    floor: 'ground',
+    x: 100, 
+    y:300
+};
+
+broadcasterRegistry['026'] = {
+    id: '026',
+    room: 5,
+    floor: 'ground',
+    x: 200, 
+    y:300
+};
+
+//hash map of (id, beacon) pairs
+var beaconRegistry = {};
+
+
+beaconRegistry['587'] = {
+    id: '587',
+    broadcaster: '026'
+};
+
+function publishBeacon(uid) {
+    if (typeof(beacons[uid]) === "undefined") {
+        console.log('no such beacon');
+        return;
+    }
+    io.emit('debug', {
+        type: 'POST',
+        client: uid,
+        msg: '{"type": "ANDROID", "count": "' + beacons[uid] + '", "max": "3"}'
     });
 }
+
+// -- Setup the application
+setupExpress();
+setupSocket();
