@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function mapController($scope, sessionService) {
+    function beaconsController($scope, $http, sessionService) {
     	var canvas = $('#mapCanvas')[0];
     	var context = canvas.getContext('2d');
 
@@ -10,8 +10,9 @@
     	beaconMap.render(context);
     }
 
-    angular.module('app').controller('mapController', [
+    angular.module('app').controller('beaconsController', [
         '$scope',
-        mapController
+        '$http',
+        beaconsController
     ]);
 })();

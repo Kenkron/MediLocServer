@@ -36,13 +36,13 @@ function getColor() {
  **/
 function BeaconMap(floors, broadcasters, beacons) {
 	var beaconMap = this;
-	this.canvas = canvas;
 	this.floors = floors;
-	this.beacons = beacons;
 	this.broadcasters = broadcasters;
+	this.beacons = beacons;
 	this.currentFloor = floors[0];
 
 	this.render = function(context) {
+		context.fillStyle = 'white';
 		currentFloor.render(context);
 		//any additional chrome goes here
 	};
@@ -73,6 +73,8 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		context.save();
 		var width = context.canvas.width;
 		var height = context.canvas.height;
+		context.rect(0,0,width,height);
+		context.fill();
 		context.drawImage(this.image, 0, 0, width, height);
 
 		//clear beacon locations
@@ -128,7 +130,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 			};
 		}
 		context.restore();
-	}
+	};
 
 	this.getBeaconAt = function(x, y) {
 		var uid;
@@ -149,5 +151,5 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		}
 
 		return this;
-	}
+	};
 }

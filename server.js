@@ -129,7 +129,7 @@ var broadcasterRegistry = {};
 //some default stuff
 broadcasterRegistry['175'] = {
     id: '175',
-    room: 1,
+    name: 'room 1',
     floor: 'ground',
     x: 100,
     y: 100
