@@ -27,22 +27,23 @@ socket.on('broadcaster', data => {
         //     controller: 'loginController'
         // });
 
-        $stateProvider.state('map', {
-            url: '/map',
-            templateUrl: 'map.html',
-            controller: 'mapController'
-        });
 
         $stateProvider.state('broadcasters', {
             url: '/broadcasters',
             temaplateUrl: 'broadcasters.html',
             controller: 'broadcastersController'
         });
+
+        $stateProvider.state('map', {
+            url: '/map',
+            templateUrl: 'map.html',
+            controller: 'mapController'
+        });
     }]);
 
     app.run([
         '$state',
         function ($state) {
-            $state.go('map');
+            $state.go('broadcasters');
         }]);
 })();

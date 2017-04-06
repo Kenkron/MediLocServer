@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function mapController($scope, sessionService) {
+    function mapController($scope) {
     	var canvas = $('#mapCanvas')[0];
     	var context = canvas.getContext('2d');
 
