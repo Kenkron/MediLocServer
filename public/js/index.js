@@ -1,3 +1,7 @@
+require('angular');
+require('angular-material');
+require('ui-router');
+
 //a list of clients that might report populations on the 'map'
 var socket = io();
 
@@ -18,35 +22,32 @@ socket.on('debug', data => {
     }
 });
 
-// Handle any canvas code here
-//----------------------------
-var canv = $('#grid')[0];
+(function(){
+    'use strict';
 
+    var app=angular.module('app',[
+        'ui.router'
+        ]);
 
+    app.config(['$stateProvider', function($stateProvider) {
+        
+        //Not implemented right now
+        // $stateProvider.state('login', {
+        //     url: '/login',
+        //     templateUrl: 'login.html',
+        //     controller: 'loginController'
+        // });
 
-function render() {
+        $stateProvider.state('map', {
+            url: '/map',
+            templateUrl: 'map.html',
+            controller: 'mapController'
+        });
 
-        // canv.width = canv.clientWidth;
-        // canv.height = canv.width;
-        // var keys = Object.keys(clients);
-        // var px = canv.height / 100;
-        // var width = canv.width / px;
-        // var ctx = canv.getContext('2d');
-        // ctx.fillStyle = "white";
-        // ctx.beginPath();
-        // ctx.rect(0, 0, 100 * px, 100 * px);
-        // ctx.fill();
-        // for (var i = 0; i < keys.length; i++) {
-        //     var key = keys[i];
-        //     var client = clients[key];
-        //     if (client.count < 1) continue;
-        //     var x = (i % 10) * 10 + 5 + (width - 100) / 2;
-        //     var y = Math.floor(i / 10) * 10 + 5;
-        //     var radius = 1 + client.count / 4;
-        //     ctx.fillStyle = "green";
-        //     if (client.count > client.max) ctx.fillStyle = "red";
-        //     ctx.beginPath();
-        //     ctx.ellipse(x * px, y * px, radius * px, radius * px, 0, Math.PI * 2, false);
-        //     ctx.fill();
-        // }
-}
+        $stateProvider.state('broadcasters', {
+            url: '/broadcasters',
+            temaplateUrl: 'broadcasters.html',
+            controller: 'broadcastersController'
+        });
+    }]);
+})();

@@ -1,36 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title></title>
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/normalize.css">
-    <link rel="stylesheet" href="/css/style.css">
-  </head>
-  <body>
-    <div class="container">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <!-- Implement the graphics portion in the canvas supplied below-->
-          <div class="well">
-            <canvas id="grid"></canvas>
-          </div>
-        </div>
-      </div>
-      <div class="panel">
-        <div class="panel-body">
-          <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#debugLog" aria-expanded="false" aria-controls="debugLog">Show Debug Log</button>
-          <div class="collapse" id="debugLog">
-            <div class="well" id="debugLogList"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </body>
-  <!-- Include all needed scripts-->
-  <script type="text/javascript" src="/js/socket.io.js"></script>
-  <script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
-  <script type="text/javascript" src="/js/bootstrap.min.js"></script>
-  <!-- Allow for custom scripts per page-->
-  <script type="text/javascript" src="/js/map.js"></script>
-  <script type="text/javascript" src="/js/index.js"></script>
+	<head>
+		<title></title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css">
+		<link rel="stylesheet" href="/css/normalize.css">
+		<link rel="stylesheet" href="/css/style.css">
+	</head>
+	<body>
+		<div ui-view layout="column"></div>
+	</body>
+  	<!-- Include all needed scripts-->
+  	<script type="text/javascript" src="/js/socket.io.js"></script>
+	<script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
+	<!-- Allow for custom scripts per page-->
+	<script type="text/javascript" src="/js/map.js"></script>
+	<script type="text/javascript" src="/js/index.js"></script>
 </html>

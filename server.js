@@ -140,7 +140,7 @@ var beaconRegistry = {};
 
 
 beaconRegistry['587'] = {
-    broadcaster = 
+    broadcaster: '026'
 };
 
 function publishBeacon(uid) {
@@ -179,9 +179,15 @@ function setupExpress() {
         publishBeacon(beacon);
     });
 
-    app.post('config'){
-
-    }
+    app.post('/config', (req, res) => {
+        var broadcaster = req.query.uid;
+        var room = req.query.room;
+        var floor = req.query.floor;
+        beaconRegistry[req.query.uid] = {
+            room: room,
+            floor: floor
+        };
+    });
 
     // Basic 404 Page
     app.use((req, res, next) => {
