@@ -85,14 +85,14 @@
         };
 
         $scope.postBroadcaster = function(broadcaster) {
-            if ($scope.localCopy.id && $scope.localCopy.id.length > 0) {
-                $http.post(hostUrl() + '/broadcaster', $scope.localCopy).then(function() {
-                    console.log('posted');
-                }, function(e) {
-                    console.log(e);
-                });
+            if (broadcaster.id && broadcaster.id.length > 0) {
+                $http.post(hostUrl() + '/broadcaster', $scope.localCopy);
             }
-        }
+        };
+
+        $scope.deleteBroadcaster = function(id) {
+            $http.post(hostUrl() + '/deleteBroadcaster', {id: id});
+        };
 
         beaconMap.render(context);
     }

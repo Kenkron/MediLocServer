@@ -82,11 +82,17 @@ function setupExpress() {
     });
 
     app.post('/broadcaster', (req, res) => {
-        console.log(req.body);
         var id = req.body.id;
-        console.log(id);
+        console.log('broadcaster ' + id);
         broadcasterRegistry[id] = req.body;
         io.emit('broadcaster', JSON.stringify(broadcasterRegistry[id]));
+    });
+
+    app.post('/deleteBroadcaster', (req, res) => {
+        var id = req.body.id;
+        console.log('deleting broadcaster '+id);
+        delete broadcasterRegistry[id];
+        io.emit('deleteBroadcaster', id);
     });
 
     // Basic 404 Page

@@ -10,11 +10,21 @@ var renderCallback = null;
 //--------------------------
 // Adds to the debug list
 socket.on('broadcaster', data => {
-    console.log(data);
+    console.log('broadcaster ' + data.id);
     data = JSON.parse(data);
     broadcasterRegistry[data.id] = data;
-    if (renderCallback){
-        console.log("rerendering");
+    if (renderCallback) {
+        renderCallback();
+    }
+});
+
+// Handle socket events here
+//--------------------------
+// Adds to the debug list
+socket.on('deleteBroadcaster', data => {
+    console.log('deleting broadcaster ' + data);
+    delete broadcasterRegistry[data];
+    if (renderCallback) {
         renderCallback();
     }
 });
@@ -23,32 +33,31 @@ socket.on('broadcaster', data => {
 //--------------------------
 // Adds to the debug list
 socket.on('beacon', data => {
-    console.log(data);
+    console.log('beacon '+data.id);
     data = JSON.parse(data);
     beaconRegistry[data.id] = data;
-    if (renderCallback){
-        console.log("rerendering");
+    if (renderCallback) {
         renderCallback();
     }
 });
 
-function hostUrl(){
-    var pathArray = location.href.split( '/' );
+function hostUrl() {
+    var pathArray = location.href.split('/');
     var protocol = pathArray[0];
     var host = pathArray[2];
     return protocol + '//' + host;
 }
 
-(function(){
+(function() {
     'use strict';
 
-    var app=angular.module('app',[
+    var app = angular.module('app', [
         'ui.router',
         'ngMaterial'
-        ]);
+    ]);
 
     app.config(['$stateProvider', function($stateProvider) {
-        
+
         //Not implemented right now
         // $stateProvider.state('login', {
         //     url: '/login',
@@ -71,7 +80,8 @@ function hostUrl(){
 
     app.run([
         '$state',
-        function ($state) {
+        function($state) {
             $state.go('broadcasters');
-        }]);
+        }
+    ]);
 })();

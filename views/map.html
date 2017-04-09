@@ -1,8 +1,6 @@
 <div>
 	<md-toolbar>
-		<md-toolbar-tools>
-			<h2>MediLoc</h2>
-		</md-toolbar-tools>
+		<h2 layout-margin>MediLoc</h2>
 	</md-toolbar>
 	<section layout="row" flex>
 		<md-sidenav
@@ -40,6 +38,8 @@
 					<label>Name</label>
 					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
+				<md-button class="md-warn" ng-click="deleteBroadcaster(localCopy.id)">Delete</md-button>
+				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">Update</md-button>
 			</div>
 			<div ng-show="state === 'createBroadcaster'">
 				<md-input-container>
