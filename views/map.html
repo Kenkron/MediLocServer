@@ -29,6 +29,20 @@
 					<input type="text" name="broadcaster" ng-model="selectedBeacon.lastSeen">
 				</md-input-container>
 			</div>
+			<div ng-show="selectedBroadcaster">
+				<h3>Broadcaster</h3>
+				<md-input-container>
+					<label>ID</label>
+					<input disabled type="text" name="id" ng-model="selectedBroadcaster.id">
+				</md-input-container>
+				<md-input-container>
+					<label>Name</label>
+					<input type="text" name="name" ng-model="selectedBroadcaster.name">
+				</md-input-container>
+			</div>
+
+
+
 		</md-sidenav>
 		<md-content>
 			<canvas id="mapCanvas" width="640" height="400" ng-click="canvasClick($event)"></canvas>
