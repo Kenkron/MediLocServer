@@ -4,11 +4,19 @@ var socket = io();
 broadcasterRegistry = {};
 beaconRegistry = {};
 
+var renderCallback = null;
+
 // Handle socket events here
 //--------------------------
 // Adds to the debug list
 socket.on('broadcaster', data => {
     console.log(data);
+    data = JSON.parse(data);
+    broadcasterRegistry[data.id] = data;
+    if (renderCallback){
+        console.log("rerendering");
+        renderCallback();
+    }
 });
 
 (function(){

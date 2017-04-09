@@ -86,7 +86,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		for (var i = 0; i < Object.keys(broadcasters).length; i++){
 			var broadcaster = broadcasters[Object.keys(broadcasters)[i]];
 			if (broadcaster.floor === floorName) {
-				renderBroadcaster(broadcaster, context);
+				this.renderBroadcaster(broadcaster, context);
 			}
 		}
 
@@ -98,13 +98,16 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	 */
 	this.renderBroadcaster = function(broadcaster, context){
 		context.save();
-		var x = (broadcasters[key].x - this.rect.x) * width / this.rect.width;
-		var y = (boradcasters[key].y - this.rect.y) * height / this.rect.height;
+
+		var width = context.canvas.width;
+		var height = context.canvas.height;
+		var x = (broadcaster.x - this.rect.x) * width / this.rect.width;
+		var y = (broadcaster.y - this.rect.y) * height / this.rect.height;
 
 		//render broadcaster as black square
 		context.strokeStyle = 'black';
 		context.beginPath();
-		context.rect(DOT_RADIUS*2, DOT_RADIUS*2, x-DOT_RADIUS, y-DOT_RADIUS);
+		context.rect(x-DOT_RADIUS, y-DOT_RADIUS, DOT_RADIUS*2, DOT_RADIUS*2);
 		context.stroke();
 
 		localBeacons = [];
