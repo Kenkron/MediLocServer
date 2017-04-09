@@ -8,6 +8,8 @@
     	var groundFloor = new BeaconFloor('ground', $('#ground')[0], {x:0,y:0,width:640,height:400}, broadcasterRegistry, beaconRegistry);
     	var beaconMap  = new BeaconMap([groundFloor], broadcasterRegistry, beaconRegistry);
 
+        $scope.localCopy = null;
+
         renderCallback = function() {
             beaconMap.render(context);
         };

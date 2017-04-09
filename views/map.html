@@ -9,7 +9,8 @@
 	        class="md-sidenav-left"
 	        md-component-id="left"
 	        md-is-locked-open="true"
-    	    md-whiteframe="4">
+    	    md-whiteframe="4"
+    	    layout-padding>
 			<div ng-show="selectedBeacon">
 				<h3>Beacon</h3>
 				<md-input-container>
@@ -22,11 +23,11 @@
 				</md-input-container>
 				<md-input-container>
 					<label>Last Seen By</label>
-					<input type="text" name="broadcaster" ng-model="selectedBeacon.broadcaster">
+					<input disabled type="text" name="broadcaster" ng-model="selectedBeacon.broadcaster">
 				</md-input-container>
 				<md-input-container>
 					<label>Time Last Seen</label>
-					<input type="text" name="broadcaster" ng-model="selectedBeacon.lastSeen">
+					<input disabled type="text" name="broadcaster" ng-model="selectedBeacon.lastSeen">
 				</md-input-container>
 			</div>
 		</md-sidenav>
