@@ -8,6 +8,8 @@
     	var groundFloor = new BeaconFloor('ground', $('#ground')[0], {x:0,y:0,width:640,height:400}, broadcasterRegistry, beaconRegistry);
     	var beaconMap  = new BeaconMap([groundFloor], broadcasterRegistry, beaconRegistry);
 
+        //display nothing in the sidenav
+        $scope.pristine = true;
         $scope.localCopy = null;
 
         renderCallback = function() {
@@ -20,6 +22,8 @@
             var y = evt.offsetY;
             $scope.clickX = x;
             $scope.clickY = y;
+            $scope.localCopy = null;
+            $scope.pristine = false;
 
             //see if anything was clicked on
             $scope.selectedBeacon = null;
@@ -30,10 +34,31 @@
             }
 
             if ($scope.selectedBeacon){
-                console.log($scope.selectedBeacon);
+                $scope.localCopy = {};
+                jQuery.extend($scope.localCopy, $scope.selectedBeacon);
             } else if ($scope.selectedBroadcaster){
-                console.log($scope.selectedBroadcaster);
+                $scope.localCopy = {};
+                jQuery.extend($scope.localCopy, $scope.selectedBroadcaster);
             }
+            console.log($scope.localCopy);
+        };
+
+        /**
+         * Compares the target object to the local copy.
+         * 
+         * @return true iff the target is the same as $scope.localCopy
+         * */
+        $scope.wasModified = function(target) {
+            if (!localCopy || !target)
+                return true;
+            var keys = Object.keys(localCopy);
+            var i;
+            for (i = 0; i < keys.length; i++) {
+                if (target[keys[i]] !== localCopy[keys[i]]) {
+                    return true;
+                }
+            }
+            return false;
         };
 
     	beaconMap.render(context);
