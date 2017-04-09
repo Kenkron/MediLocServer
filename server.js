@@ -157,7 +157,7 @@ broadcasterRegistry['614'] = {
     name: 'room 4',
     floor: 'ground',
     x: 100, 
-    y:300
+    y:200
 };
 
 broadcasterRegistry['026'] = {
@@ -165,7 +165,7 @@ broadcasterRegistry['026'] = {
     name: 'room 5',
     floor: 'ground',
     x: 200, 
-    y:300
+    y:200
 };
 
 //hash map of (id, beacon) pairs

@@ -1,28 +1,37 @@
 <div>
-	<div layout="row" flex>
-		<div id="sidebar">
+	<md-toolbar>
+		<md-toolbar-tools>
+			<h2>MediLoc</h2>
+		</md-toolbar-tools>
+	</md-toolbar>
+	<section layout="row" flex>
+		<md-sidenav
+	        class="md-sidenav-left"
+	        md-component-id="left"
+	        md-is-locked-open="true"
+    	    md-whiteframe="4">
 			<div ng-show="selectedBeacon">
 				<h3>Beacon</h3>
 				<md-input-container>
 					<label>ID</label>
-					<md-input disabled type="text" name="id" ng-model="selectedBeacon.id">
+					<input disabled type="text" name="id" ng-model="selectedBeacon.id">
 				</md-input-container>
 				<md-input-container>
 					<label>Name</label>
-					<md-input type="text" name="name" ng-model="selectedBeacon.name">
+					<input type="text" name="name" ng-model="selectedBeacon.name">
 				</md-input-container>
 				<md-input-container>
 					<label>Last Seen By</label>
-					<md-input type="text" name="broadcaster" ng-model="selectedBeacon.broadcaster">
+					<input type="text" name="broadcaster" ng-model="selectedBeacon.broadcaster">
 				</md-input-container>
 				<md-input-container>
 					<label>Time Last Seen</label>
-					<md-input type="text" name="broadcaster" ng-model="selectedBeacon.lastSeen">
+					<input type="text" name="broadcaster" ng-model="selectedBeacon.lastSeen">
 				</md-input-container>
 			</div>
-		</div>
+		</md-sidenav>
 		<md-content>
 			<canvas id="mapCanvas" width="640" height="400" ng-click="canvasClick($event)"></canvas>
 		</md-content>
-	</div>
+	</section>
 </div>

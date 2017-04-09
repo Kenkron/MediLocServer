@@ -36,7 +36,8 @@ socket.on('beacon', data => {
     'use strict';
 
     var app=angular.module('app',[
-        'ui.router'
+        'ui.router',
+        'ngMaterial'
         ]);
 
     app.config(['$stateProvider', function($stateProvider) {
