@@ -59,6 +59,7 @@ function setupExpress() {
     app.use(express.static(publicDir));
     app.use(express.static('views'));
     app.use(express.static('node_modules'));
+    app.use('/bower',express.static('bower_components'));
     // Setup the paths (Insert any other needed paths here)
     // ------------------------------------------------------------------------
     // Home page
@@ -137,7 +138,7 @@ broadcasterRegistry['175'] = {
 
 broadcasterRegistry['387'] = {
     id: '387',
-    room: 2,
+    name: 'room 2',
     floor: 'ground',
     x: 200, 
     y:100
@@ -145,7 +146,7 @@ broadcasterRegistry['387'] = {
 
 broadcasterRegistry['615'] = {
     id: '615',
-    room: 3,
+    name: 'room 3',
     floor: 'ground',
     x: 300, 
     y:100
@@ -153,7 +154,7 @@ broadcasterRegistry['615'] = {
 
 broadcasterRegistry['614'] = {
     id: '614',
-    room: 4,
+    name: 'room 4',
     floor: 'ground',
     x: 100, 
     y:300
@@ -161,7 +162,7 @@ broadcasterRegistry['614'] = {
 
 broadcasterRegistry['026'] = {
     id: '026',
-    room: 5,
+    name: 'room 5',
     floor: 'ground',
     x: 200, 
     y:300
@@ -173,7 +174,14 @@ var beaconRegistry = {};
 
 beaconRegistry['587'] = {
     id: '587',
-    broadcaster: '026'
+    broadcaster: '026',
+    lastSeen: new Date().getTime()
+};
+
+beaconRegistry['954'] = {
+    id: '954',
+    broadcaster: '026',
+    lastSeen: new Date().getTime()
 };
 
 function publishBeacon(uid) {

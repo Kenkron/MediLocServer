@@ -43,7 +43,7 @@ function BeaconMap(floors, broadcasters, beacons) {
 
 	this.render = function(context) {
 		context.fillStyle = 'white';
-		currentFloor.render(context);
+		this.currentFloor.render(context);
 		//any additional chrome goes here
 	};
 
@@ -80,7 +80,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		//clear beacon locations
 		beaconLocations = {};
 		//clear broadcaster locations
-		broadcasterViewLocations = {};
+		broadcasterLocations = {};
 
 		//render broadcaster by broadcaster
 		for (var i = 0; i < Object.keys(broadcasters).length; i++){
@@ -103,6 +103,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		var height = context.canvas.height;
 		var x = (broadcaster.x - this.rect.x) * width / this.rect.width;
 		var y = (broadcaster.y - this.rect.y) * height / this.rect.height;
+		broadcasterLocations[broadcaster.id] = {x: x, y: y};
 
 		//render broadcaster as black square
 		context.strokeStyle = 'black';
@@ -124,10 +125,10 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 			var x2 = x + radius * Math.cos(angle);
 			var y2 = y + radius * Math.sin(angle);
 			context.beginPath();
-			context.ellipse(x, y, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
-			context.fillStyle = COLORS[localBeacons[i].name.hashCode() % COLORS.length];
+			context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
+			context.fillStyle = COLORS[localBeacons[i].id.hashCode() % COLORS.length];
 			context.fill();
-			beaconViewLocations[localBeacons[i].uid] = {
+			beaconLocations[localBeacons[i].id] = {
 				x: x2,
 				y: y2
 			};
@@ -136,23 +137,28 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	};
 
 	this.getBeaconAt = function(x, y) {
-		var uid;
-		for (var i = 0; i < Object.keys(beaconLocations); i++) {
+		var id;
+		for (var i = 0; i < Object.keys(beaconLocations).length; i++) {
 			var key = Object.keys(beaconLocations)[i];
 			var dx = x - beaconLocations[key].x;
 			var dy = y - beaconLocations[key].y;
 			if (Math.sqrt(dx * dx + dy * dy) < DOT_RADIUS) {
-				uid = key;
-				break;
+				return beacons[key];
 			}
 		}
-		for (var i = 0; i < beacons.length; i++) {
-			if (beacons[i].uid === uid) {
-				return beacons[i];
-			}
-			return null;
-		}
+		return null;
+	};
 
-		return this;
+	this.getBroadcasterAt = function(x, y) {
+		var id;
+		for (var i = 0; i < Object.keys(broadcasterLocations).length; i++) {
+			var key = Object.keys(broadcasterLocations)[i];
+			var dx = Math.abs(x - broadcasterLocations[key].x);
+			var dy = Math.abs(y - broadcasterLocations[key].y);
+			if (dx < DOT_RADIUS && dy < DOT_RADIUS) {
+				return broadcasters[key];
+			}
+		}
+		return null;
 	};
 }

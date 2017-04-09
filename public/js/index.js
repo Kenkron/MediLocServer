@@ -19,6 +19,19 @@ socket.on('broadcaster', data => {
     }
 });
 
+// Handle socket events here
+//--------------------------
+// Adds to the debug list
+socket.on('beacon', data => {
+    console.log(data);
+    data = JSON.parse(data);
+    beaconRegistry[data.id] = data;
+    if (renderCallback){
+        console.log("rerendering");
+        renderCallback();
+    }
+});
+
 (function(){
     'use strict';
 

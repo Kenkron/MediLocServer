@@ -1,26 +1,31 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="app">
 	<head>
-		<title></title>
-		<link rel="stylesheet" href="/css/bootstrap.min.css">
-		<link rel="stylesheet" href="/css/normalize.css">
-		<link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+		<title>MediLoc</title>
+		<!-- <link rel="stylesheet" href="/css/bootstrap.min.css"> -->
+		<!-- <link rel="stylesheet" href="/css/normalize.css"> -->
+		<!-- <link rel="stylesheet" href="/css/style.css"> -->
+	    <link rel="stylesheet" href="/angular-material/angular-material.min.css">
+	      	<!-- Include all needed scripts-->
+	  	<script type="text/javascript" src="/js/socket.io.js"></script>
+		<script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
+		<!-- <script type="text/javascript" src="/js/bootstrap.min.js"></script> -->
+		<!-- Allow for custom scripts per page-->
+
+		<script src="/angular/angular.js"></script>
+		<script src="/angular-animate/angular-animate.js"></script>
+		<script src="/angular-aria/angular-aria.js"></script>
+		<script src="/angular-messages/angular-messages.js"></script>
+		<script src="angular-material/angular-material.min.js"></script>
+		<script src="/angular-ui-router/release/angular-ui-router.js"></script>
 	</head>
 	<body>
-		<img id="ground" src="images/ground.png" hidden>
 		<div ui-view layout="column"></div>
+		<img id="ground" src="images/ground.png" hidden>
 	</body>
-  	<!-- Include all needed scripts-->
-  	<script type="text/javascript" src="/js/socket.io.js"></script>
-	<script type="text/javascript" src="/js/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="/js/bootstrap.min.js"></script>
-	<!-- Allow for custom scripts per page-->
 
-	<script src="/angular/angular.js"></script>
-	<script src="/angular-animate/angular-animate.js"></script>
-	<script src="/angular-aria/angular-aria.js"></script>
-	<script src="/angular-material/angular-material.js"></script>
-	<script src="/angular-ui-router/release/angular-ui-router.js"></script>
+
 	<script type="text/javascript" src="/js/mapDisplay.js"></script>
 	<script type="text/javascript" src="/js/index.js"></script>
 	<script type="text/javascript" src="/js/map.js"></script>
