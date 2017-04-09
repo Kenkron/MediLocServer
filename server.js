@@ -11,6 +11,7 @@ var app = express();
 var sockets = require('socket.io');
 var path = require('path');
 var http = require('pug');
+var bodyParser = require('body-parser');
 
 var server;
 var io;
@@ -60,6 +61,10 @@ function setupExpress() {
     app.use(express.static('views'));
     app.use(express.static('node_modules'));
     app.use('/bower',express.static('bower_components'));
+
+
+    app.use(bodyParser.json());
+
     // Setup the paths (Insert any other needed paths here)
     // ------------------------------------------------------------------------
     // Home page
@@ -76,14 +81,12 @@ function setupExpress() {
         publishBeacon(beacon);
     });
 
-    app.post('/config', (req, res) => {
-        var broadcaster = req.query.uid;
-        var room = req.query.room;
-        var floor = req.query.floor;
-        beaconRegistry[req.query.uid] = {
-            room: room,
-            floor: floor
-        };
+    app.post('/broadcaster', (req, res) => {
+        console.log(req.body);
+        var id = req.body.id;
+        console.log(id);
+        broadcasterRegistry[id] = req.body;
+        io.emit('broadcaster', JSON.stringify(broadcasterRegistry[id]));
     });
 
     // Basic 404 Page

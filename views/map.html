@@ -43,25 +43,19 @@
 			</div>
 			<div ng-show="state === 'createBroadcaster'">
 				<md-input-container>
-					<label>X</label>
-					<input disabled type="text" name="id" ng-model="localCopy.y">
-				</md-input-container>
-				<md-input-container>
-					<label>Y</label>
-					<input type="text" name="name" ng-model="localCopy.x">
-				</md-input-container>
-				<md-input-container>
 					<label>Floor</label>
 					<input disabled type="text" name="name" ng-model="localCopy.currentFloor">
 				</md-input-container>
 				<md-input-container>
 					<label>ID</label>
-					<input disabled type="text" name="name" ng-model="localCopy.id">
+					<input type="text" name="id" ng-model="localCopy.id">
 				</md-input-container>
-				<md-button class="md-raised">New Broadcaster Here</md-button>
+				<md-input-container>
+					<label>Name</label>
+					<input type="text" name="name" ng-model="localCopy.name">
+				</md-input-container>
+				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Broadcaster Here</md-button>
 			</div>
-
-
 		</md-sidenav>
 		<md-content>
 			<canvas id="mapCanvas" width="640" height="400" ng-click="canvasClick($event)"></canvas>

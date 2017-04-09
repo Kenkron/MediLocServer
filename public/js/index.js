@@ -32,6 +32,13 @@ socket.on('beacon', data => {
     }
 });
 
+function hostUrl(){
+    var pathArray = location.href.split( '/' );
+    var protocol = pathArray[0];
+    var host = pathArray[2];
+    return protocol + '//' + host;
+}
+
 (function(){
     'use strict';
 
