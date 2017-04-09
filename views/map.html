@@ -29,6 +29,9 @@
 					<label>Time Last Seen</label>
 					<input disabled type="text" name="broadcaster" ng-value="localCopy.lastSeen | date:'medium'">
 				</md-input-container>
+				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update</md-button>
+
+
 			</div>
 			<div ng-show="state === 'broadcaster'">
 				<h3>Broadcaster</h3>

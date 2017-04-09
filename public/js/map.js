@@ -93,6 +93,9 @@
                 });
             }
         }
+        $scope.postBeacon = function(target) {
+          $http.post(hostUrl() + '/beacon', target);
+        }
 
         beaconMap.render(context);
     }

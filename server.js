@@ -89,6 +89,14 @@ function setupExpress() {
         io.emit('broadcaster', JSON.stringify(broadcasterRegistry[id]));
     });
 
+    app.post('/beacon', (req, res) => {
+        var id = req.body.id;
+        console.log(JSON.stringify(req.body));
+        beaconRegistry[id] = req.body;
+        io.emit('beacon', JSON.stringify(beaconRegistry[id]));
+    });
+
+
     // Basic 404 Page
     app.use((req, res, next) => {
         var err = {
