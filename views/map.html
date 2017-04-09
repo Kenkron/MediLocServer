@@ -40,11 +40,15 @@
 					<label>Name</label>
 					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
+				<md-input-container>
+					<label>Floor</label>
+					<input type="text" name="floor" ng-model="localCopy.floor">
+				</md-input-container>
 			</div>
 			<div ng-show="state === 'createBroadcaster'">
 				<md-input-container>
 					<label>Floor</label>
-					<input disabled type="text" name="name" ng-model="localCopy.currentFloor">
+					<input disabled type="text" name="name" ng-model="localCopy.floor">
 				</md-input-container>
 				<md-input-container>
 					<label>ID</label>
