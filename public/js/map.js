@@ -91,10 +91,14 @@
         };
 
         $scope.deleteBroadcaster = function(id) {
-            $http.post(hostUrl() + '/deleteBroadcaster', {id: id});
+            $http.post(hostUrl() + '/deleteBroadcaster', {
+                id: id
+            });
         };
 
-        beaconMap.render(context);
+        $scope.postBeacon = function(target) {
+            $http.post(hostUrl() + '/beacon', target);
+        };
     }
 
     angular.module('app').controller('mapController', [

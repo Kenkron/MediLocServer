@@ -13,6 +13,11 @@ var path = require('path');
 var http = require('pug');
 var bodyParser = require('body-parser');
 
+if (typeof localStorage === "undefined" || localStorage === null) {
+  var LocalStorage = require('node-localstorage').LocalStorage;
+  localStorage = new LocalStorage('./broadcasterRegistry');
+}
+
 var server;
 var io;
 
@@ -86,6 +91,7 @@ function setupExpress() {
         console.log('broadcaster ' + id);
         broadcasterRegistry[id] = req.body;
         io.emit('broadcaster', JSON.stringify(broadcasterRegistry[id]));
+        localStorage.setItem('broadcasterRegistry', JSON.stringify(broadcasterRegistry));
     });
 
     app.post('/deleteBroadcaster', (req, res) => {
@@ -93,6 +99,14 @@ function setupExpress() {
         console.log('deleting broadcaster '+id);
         delete broadcasterRegistry[id];
         io.emit('deleteBroadcaster', id);
+        localStorage.setItem('broadcasterRegistry', JSON.stringify(broadcasterRegistry));
+    });
+
+    app.post('/beacon', (req, res) => {
+        var id = req.body.id;
+        console.log(JSON.stringify(req.body));
+        beaconRegistry[id] = req.body;
+        io.emit('beacon', JSON.stringify(beaconRegistry[id]));
     });
 
     // Basic 404 Page
@@ -135,47 +149,9 @@ function setupExpress() {
 //Hash map of (id, broadcaster) pairs
 var broadcasterRegistry = {};
 
-
-//some default stuff
-broadcasterRegistry['175'] = {
-    id: '175',
-    name: 'room 1',
-    floor: 'ground',
-    x: 100,
-    y: 100
-};
-
-broadcasterRegistry['387'] = {
-    id: '387',
-    name: 'room 2',
-    floor: 'ground',
-    x: 200, 
-    y:100
-};
-
-broadcasterRegistry['615'] = {
-    id: '615',
-    name: 'room 3',
-    floor: 'ground',
-    x: 300, 
-    y:100
-};
-
-broadcasterRegistry['614'] = {
-    id: '614',
-    name: 'room 4',
-    floor: 'ground',
-    x: 100, 
-    y:200
-};
-
-broadcasterRegistry['026'] = {
-    id: '026',
-    name: 'room 5',
-    floor: 'ground',
-    x: 200, 
-    y:200
-};
+if (localStorage.getItem('broadcasterRegistry')){
+    broadcasterRegistry = JSON.parse(localStorage.getItem('broadcasterRegistry'));
+}
 
 //hash map of (id, beacon) pairs
 var beaconRegistry = {};
@@ -183,13 +159,13 @@ var beaconRegistry = {};
 
 beaconRegistry['587'] = {
     id: '587',
-    broadcaster: '026',
+    broadcaster: '000',
     lastSeen: new Date().getTime()
 };
 
 beaconRegistry['954'] = {
     id: '954',
-    broadcaster: '026',
+    broadcaster: '000',
     lastSeen: new Date().getTime()
 };
 
