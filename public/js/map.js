@@ -9,8 +9,7 @@
     	var beaconMap  = new BeaconMap([groundFloor], broadcasterRegistry, beaconRegistry);
 
         //display nothing in the sidenav
-        $scope.pristine = true;
-        $scope.localCopy = null;
+        $scope.state = 'pristine';
 
         renderCallback = function() {
             beaconMap.render(context);
@@ -20,6 +19,7 @@
         $scope.canvasClick = function(evt){
             var x = evt.offsetX;
             var y = evt.offsetY;
+            beaconMap.cursor = {x: x, y: y};
             $scope.clickX = x;
             $scope.clickY = y;
             $scope.localCopy = null;
@@ -33,14 +33,24 @@
                 $scope.selectedBroadcaster = beaconMap.currentFloor.getBroadcasterAt(x,y); 
             }
 
+            $scope.localCopy = {};
             if ($scope.selectedBeacon){
-                $scope.localCopy = {};
+                beaconMap.cursor = {x: beaconMap.currentFloor.beaconLocations[$scope.selectedBeacon.id].x, 
+                    y: beaconMap.currentFloor.beaconLocations[$scope.selectedBeacon.id].y};
+                $scope.state = 'beacon';
                 jQuery.extend($scope.localCopy, $scope.selectedBeacon);
             } else if ($scope.selectedBroadcaster){
-                $scope.localCopy = {};
+                beaconMap.cursor = {x: $scope.selectedBroadcaster.x, y: $scope.selectedBroadcaster.y};
+                $scope.state = 'broadcaster';
                 jQuery.extend($scope.localCopy, $scope.selectedBroadcaster);
+            } else {
+                $scope.state = 'createBroadcaster';
+                $scope.localCopy.x = x;
+                $scope.localCopy.y = y;
+                $scope.localCopy.floor = beaconMap.currentFloor.floorName;
             }
             console.log($scope.localCopy);
+            beaconMap.render(context);
         };
 
         /**

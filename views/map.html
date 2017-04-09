@@ -11,37 +11,55 @@
 	        md-is-locked-open="true"
     	    md-whiteframe="4"
     	    layout-padding>
-			<div ng-show="selectedBeacon">
+			<div ng-show="state === 'beacon'">
 				<h3>Beacon</h3>
 				<md-input-container>
 					<label>ID</label>
-					<input disabled type="text" name="id" ng-model="selectedBeacon.id">
+					<input disabled type="text" name="id" ng-model="localCopy.id">
 				</md-input-container>
 				<md-input-container>
 					<label>Name</label>
-					<input type="text" name="name" ng-model="selectedBeacon.name">
+					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
 				<md-input-container>
 					<label>Last Seen By</label>
-					<input disabled type="text" name="broadcaster" ng-model="selectedBeacon.broadcaster">
+					<input disabled type="text" name="broadcaster" ng-model="localCopy.broadcaster">
 				</md-input-container>
 				<md-input-container>
 					<label>Time Last Seen</label>
-					<input disabled type="text" name="broadcaster" ng-model="selectedBeacon.lastSeen">
+					<input disabled type="text" name="broadcaster" ng-value="localCopy.lastSeen | date:'medium'">
 				</md-input-container>
 			</div>
-			<div ng-show="selectedBroadcaster">
+			<div ng-show="state === 'broadcaster'">
 				<h3>Broadcaster</h3>
 				<md-input-container>
 					<label>ID</label>
-					<input disabled type="text" name="id" ng-model="selectedBroadcaster.id">
+					<input disabled type="text" name="id" ng-model="localCopy.id">
 				</md-input-container>
 				<md-input-container>
 					<label>Name</label>
-					<input type="text" name="name" ng-model="selectedBroadcaster.name">
+					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
 			</div>
-
+			<div ng-show="state === 'createBroadcaster'">
+				<md-input-container>
+					<label>X</label>
+					<input disabled type="text" name="id" ng-model="localCopy.y">
+				</md-input-container>
+				<md-input-container>
+					<label>Y</label>
+					<input type="text" name="name" ng-model="localCopy.x">
+				</md-input-container>
+				<md-input-container>
+					<label>Floor</label>
+					<input disabled type="text" name="name" ng-model="localCopy.currentFloor">
+				</md-input-container>
+				<md-input-container>
+					<label>ID</label>
+					<input disabled type="text" name="name" ng-model="localCopy.id">
+				</md-input-container>
+				<md-button class="md-raised">New Broadcaster Here</md-button>
+			</div>
 
 
 		</md-sidenav>
