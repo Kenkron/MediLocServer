@@ -47,11 +47,12 @@ function BeaconMap(floors, broadcasters, beacons) {
 	this.beacons = beacons;
 	this.currentFloor = floors[0];
 	this.filter = null;
+	this.showUnnamed = true;
 
 	this.render = function(context) {
 		context.save();
 		context.fillStyle = 'white';
-		this.currentFloor.render(context, this.filter);
+		this.currentFloor.render(context, this.filter, this.showUnnamed);
 		//any additional chrome goes here
 		var cursor = this.cursor;
 		if (cursor) {
@@ -88,7 +89,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	this.beaconLocations = {};
 	this.broadcasterLocations = {};
 
-	this.render = function(context, filter) {
+	this.render = function(context, filter, showUnnamed) {
 		context.save();
 		var width = context.canvas.width;
 		var height = context.canvas.height;
@@ -105,7 +106,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		for (var i = 0; i < Object.keys(broadcasters).length; i++) {
 			var broadcaster = broadcasters[Object.keys(broadcasters)[i]];
 			if (broadcaster.floor === floorName) {
-				this.renderBroadcaster(broadcaster, context, filter);
+				this.renderBroadcaster(broadcaster, context, filter, showUnnamed);
 			}
 		}
 
@@ -117,7 +118,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	 *
 	 * @param filter if provided, only beacons that 'match' this string will be rendered
 	 */
-	this.renderBroadcaster = function(broadcaster, context, filter) {
+	this.renderBroadcaster = function(broadcaster, context, filter, showUnnamed) {
 		context.save();
 
 		var width = context.canvas.width;
@@ -138,6 +139,9 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		localBeacons = [];
 		for (var i = 0; i < Object.keys(beacons).length; i++) {
 			var beacon = beacons[Object.keys(beacons)[i]];
+			if (!showUnnamed && (!beacon.name || beacon.name.length == 0)){
+				continue;
+			}
 			if (beacon.broadcaster === broadcaster.id) {
 				localBeacons.push(beacon);
 			}
@@ -145,17 +149,19 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		var radius = Math.max(localBeacons.length * 2 * DOT_RADIUS / 3.1416,
 			8 * DOT_RADIUS / 3.1416);
 		for (var i = 0; i < localBeacons.length; i++) {
-			if (!beaconMatches(localBeacons[i], filter)){
+			var beacon = localBeacons[i]
+			if (!beaconMatches(beacon, filter)){
 				continue;
 			}
+			
 			var angle = Math.PI * 2 * i / localBeacons.length;
 			var x2 = x + radius * Math.cos(angle);
 			var y2 = y + radius * Math.sin(angle);
 			context.beginPath();
 			context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
-			context.fillStyle = COLORS[localBeacons[i].id.hashCode() % COLORS.length];
+			context.fillStyle = COLORS[beacon.id.hashCode() % COLORS.length];
 			context.fill();
-			this.beaconLocations[localBeacons[i].id] = {
+			this.beaconLocations[beacon.id] = {
 				x: x2,
 				y: y2
 			};

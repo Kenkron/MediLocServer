@@ -19,7 +19,16 @@
             height: 800
         }, broadcasterRegistry, beaconRegistry);
 
-        var beaconMap = new BeaconMap([basement, groundFloor], broadcasterRegistry, beaconRegistry);
+
+        var floor1 = new BeaconFloor('floor 1', $('#floor1')[0], {
+            x: 0,
+            y: 0,
+            width: 800,
+            height: 800
+        }, broadcasterRegistry, beaconRegistry);
+
+        var beaconMap = new BeaconMap([floor1, groundFloor, basement], broadcasterRegistry, beaconRegistry);
+        beaconMap.currentFloor = groundFloor;
         $scope.beaconMap = beaconMap;
         //display nothing in the sidenav
         $scope.state = 'pristine';

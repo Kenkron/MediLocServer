@@ -9,26 +9,34 @@
 			md-is-locked-open="$mdMedia('gt-md')"
 			md-whiteframe="4"
 			layout-padding>
-			<div layout-margin md-whiteframe="4">
-				<md-autocomplete
-					md-no-cache="true"
-					md-selected-item="selectedItem"
-					md-search-text-change="setBeaconFilter(searchText)"
-					md-search-text="searchText"
-					md-selected-item-change="setBeaconFilter(searchText);selectBeacon(item)"
-					md-items="item in searchBeacons(searchText)"
-					md-item-text="item.id"
-					md-min-length="0"
-					placeholder="Find Beacon">
-					<md-item-template layout="column">
-						<span class="item-title"><b>{{item.name}}</b></span>
-						<span class="item-metadata">id: {{item.id}}</span>
-					</md-item-template>
-					<md-not-found>
-						No states matching "{{ctrl.searchText}}" were found.
-						<a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a>
-					</md-not-found>
-				</md-autocomplete>
+			<fieldset>
+				<legend>Navigation</legend>
+				<md-input-container>
+					<md-autocomplete
+						md-no-cache="true"
+						md-selected-item="selectedItem"
+						md-search-text-change="setBeaconFilter(searchText)"
+						md-search-text="searchText"
+						md-selected-item-change="setBeaconFilter(searchText);selectBeacon(item)"
+						md-items="item in searchBeacons(searchText)"
+						md-item-text="item.id"
+						md-min-length="0"
+						placeholder="Find Beacon">
+						<md-item-template layout="column">
+							<span class="item-title"><b>{{item.name}}</b></span>
+							<span class="item-metadata">id: {{item.id}}</span>
+						</md-item-template>
+						<md-not-found>
+							No states matching "{{ctrl.searchText}}" were found.
+							<a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a>
+						</md-not-found>
+					</md-autocomplete>
+				</md-input-container>
+				<div>
+				<md-checkbox ng-model="beaconMap.showUnnamed" ng-change="render()">
+					Show Unnamed
+				</md-checkbox>
+				</div>
 				<md-input-container>
 					<label>Floor</label>
 					<md-select ng-model="beaconMap.currentFloor" ng-change="render()">
@@ -37,7 +45,7 @@
 						</md-option>
 					</md-select>
 				</md-input-container>
-			</div>
+			</fieldset>
 			<md-separator></md-separator>
 			<div ng-show="state === 'beacon'">
 				<h3>Beacon</h3>
