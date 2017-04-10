@@ -65,6 +65,7 @@
 					<label>Time Last Seen</label>
 					<input disabled type="text" name="broadcaster" ng-value="localCopy.lastSeen | date:'medium'">
 				</md-input-container>
+				<md-button class="md-warn md-raised" ng-click="deleteBeacon(localCopy.id)">Delete</md-button>
 				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update{{wasModified(selectedBeacon) ? '*' : ''}}</md-button>
 			</div>
 			<div ng-show="state === 'broadcaster'">
@@ -81,7 +82,7 @@
 					<label>Floor</label>
 					<input type="text" name="floor" ng-model="localCopy.floor">
 				</md-input-container>
-				<md-button class="md-warn" ng-click="deleteBroadcaster(localCopy.id)">Delete</md-button>
+				<md-button class="md-warn md-raised" ng-click="deleteBroadcaster(localCopy.id)">Delete</md-button>
 				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">Update</md-button>
 			</div>
 			<div ng-show="state === 'createBroadcaster'">

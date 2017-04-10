@@ -10,8 +10,8 @@ var renderCallback = null;
 //--------------------------
 // Adds to the debug list
 socket.on('broadcaster', data => {
-    console.log('broadcaster ' + data.id);
     data = JSON.parse(data);
+    console.log('broadcaster ' + data.id);
     broadcasterRegistry[data.id] = data;
     if (renderCallback) {
         renderCallback();
@@ -33,13 +33,22 @@ socket.on('deleteBroadcaster', data => {
 //--------------------------
 // Adds to the debug list
 socket.on('beacon', data => {
-    console.log('beacon '+data.id);
     data = JSON.parse(data);
+    console.log('beacon ' + data.id);
     beaconRegistry[data.id] = data;
     if (renderCallback) {
         renderCallback();
     }
 });
+
+socket.on('deleteBeacon', data => {
+    console.log('deleting beacon ' + data);
+    delete beaconRegistry[data];
+    if (renderCallback) {
+        renderCallback();
+    }
+});
+
 
 function hostUrl() {
     var pathArray = location.href.split('/');

@@ -91,7 +91,7 @@ function setupExpress() {
         }
         beaconRegistry[beacon].broadcaster = broadcaster;
         beaconRegistry[beacon].lastSeen = new Date().getTime();
-        var json = JSON.stringify(beaconRegistry[beacon])
+        var json = JSON.stringify(beaconRegistry[beacon]);
         io.emit('beacon', json);
         localStorage.setItem('beaconRegistry', JSON.stringify(beaconRegistry));
         res.send(json);
@@ -122,6 +122,15 @@ function setupExpress() {
         io.emit('beacon', JSON.stringify(beaconRegistry[id]));
         localStorage.setItem('beaconRegistry', JSON.stringify(beaconRegistry));
         res.send(JSON.stringify(req.body));
+    });
+
+    app.post('/deleteBeacon', (req, res) => {
+        var id = req.body.id;
+        console.log('deleting beacon ' + id);
+        delete beaconRegistry[id];
+        io.emit('deleteBeacon', id);
+        localStorage.setItem('beaconRegistry', JSON.stringify(beaconRegistry));
+        res.send(id);
     });
 
     // Basic 404 Page

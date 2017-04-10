@@ -36,7 +36,6 @@
         renderCallback = function() {
             beaconMap.render(context);
         };
-
         $scope.render = renderCallback;
 
         console.log('set renderCallback');
@@ -133,6 +132,16 @@
                 if ($scope.selectedBeacon) {
                     $scope.selectBeacon(beaconRegistry[$scope.selectedBeacon.id]);
                 }
+            }, function() {
+                $mdToast.show($mdToast.simple().textContent('Error posting, see log for details'));
+            });
+        };
+
+        $scope.deleteBeacon = function(id) {
+            $http.post(hostUrl() + '/deleteBeacon', {
+                id: id
+            }).then(function() {
+                $scope.state = 'pristine';
             }, function() {
                 $mdToast.show($mdToast.simple().textContent('Error posting, see log for details'));
             });

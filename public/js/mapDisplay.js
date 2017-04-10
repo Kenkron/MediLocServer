@@ -11,12 +11,23 @@ var COLORS = [
 
 var colorCounter = 0;
 
-String.prototype.hashCode = function() {
+function colorAlpha(color, alpha){
+	colors = [
+		'rgba(255,0,0,',
+		'rgba(255,255,0,',
+		'rgba(0,255,0,',
+		'rgba(0,255,255,',
+		'rgba(0,0,255,'
+		];
+	return colors[color] + alpha + ')';
+}
+
+hashString = function(str) {
 	var hash = 0,
 		i, chr;
-	if (this.length === 0) return hash;
-	for (i = 0; i < this.length; i++) {
-		chr = this.charCodeAt(i);
+	if (str.length === 0) return hash;
+	for (i = 0; i < str.length; i++) {
+		chr = str.charCodeAt(i);
 		hash = ((hash << 5) - hash) + chr;
 		hash |= 0; // Convert to 32bit integer
 	}
@@ -139,17 +150,16 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		localBeacons = [];
 		for (var i = 0; i < Object.keys(beacons).length; i++) {
 			var beacon = beacons[Object.keys(beacons)[i]];
-			if (!showUnnamed && (!beacon.name || beacon.name.length == 0)){
-				continue;
-			}
-			if (beacon.broadcaster === broadcaster.id) {
-				localBeacons.push(beacon);
+			if (showUnnamed || (beacon.name && beacon.name.length > 0)){
+				if (beacon.broadcaster === broadcaster.id) {
+					localBeacons.push(beacon);
+				}
 			}
 		}
 		var radius = Math.max(localBeacons.length * 2 * DOT_RADIUS / 3.1416,
 			8 * DOT_RADIUS / 3.1416);
 		for (var i = 0; i < localBeacons.length; i++) {
-			var beacon = localBeacons[i]
+			var beacon = localBeacons[i];
 			if (!beaconMatches(beacon, filter)){
 				continue;
 			}
@@ -159,7 +169,9 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 			var y2 = y + radius * Math.sin(angle);
 			context.beginPath();
 			context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
-			context.fillStyle = COLORS[beacon.id.hashCode() % COLORS.length];
+			var col = hashString(beacon.id) % COLORS.length;
+			var alpha = Math.max(0.33, 1 - (new Date().getTime() - beacon.lastSeen)/60000);
+			context.fillStyle = colorAlpha(col, alpha);
 			context.fill();
 			this.beaconLocations[beacon.id] = {
 				x: x2,
