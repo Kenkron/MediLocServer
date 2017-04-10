@@ -14,8 +14,8 @@ var http = require('pug');
 var bodyParser = require('body-parser');
 
 if (typeof localStorage === "undefined" || localStorage === null) {
-  var LocalStorage = require('node-localstorage').LocalStorage;
-  localStorage = new LocalStorage('./broadcasterRegistry');
+    var LocalStorage = require('node-localstorage').LocalStorage;
+    localStorage = new LocalStorage('./broadcasterRegistry');
 }
 
 var server;
@@ -41,7 +41,7 @@ function setupSocket() {
     // Setup the internals
     io.on('connection', socket => {
         //get client up to date on broadcasters
-        for (var i = 0; i < Object.keys(broadcasterRegistry).length; i++){
+        for (var i = 0; i < Object.keys(broadcasterRegistry).length; i++) {
             var key = Object.keys(broadcasterRegistry)[i];
             socket.emit('broadcaster', JSON.stringify(broadcasterRegistry[key]));
         }
@@ -65,7 +65,7 @@ function setupExpress() {
     app.use(express.static(publicDir));
     app.use(express.static('views'));
     app.use(express.static('node_modules'));
-    app.use('/bower',express.static('bower_components'));
+    app.use('/bower', express.static('bower_components'));
 
 
     app.use(bodyParser.json());
@@ -83,8 +83,8 @@ function setupExpress() {
         console.log(JSON.stringify(req.query));
         var broadcaster = req.query.uid;
         var beacon = req.query.beacon;
-        console.log("found " + beacon  + " at: " + broadcaster);
-        if (!beaconRegistry[beacon]){
+        console.log("found " + beacon + " at: " + broadcaster);
+        if (!beaconRegistry[beacon]) {
             beaconRegistry[beacon] = {
                 id: beacon
             };
@@ -93,6 +93,7 @@ function setupExpress() {
         beaconRegistry[beacon].lastSeen = new Date().getTime();
         var json = JSON.stringify(beaconRegistry[beacon])
         io.emit('beacon', json);
+        localStorage.setItem('beaconRegistry', JSON.stringify(beaconRegistry));
         res.send(json);
     });
 
@@ -102,14 +103,16 @@ function setupExpress() {
         broadcasterRegistry[id] = req.body;
         io.emit('broadcaster', JSON.stringify(broadcasterRegistry[id]));
         localStorage.setItem('broadcasterRegistry', JSON.stringify(broadcasterRegistry));
+        res.send(JSON.stringify(req.body));
     });
 
     app.post('/deleteBroadcaster', (req, res) => {
         var id = req.body.id;
-        console.log('deleting broadcaster '+id);
+        console.log('deleting broadcaster ' + id);
         delete broadcasterRegistry[id];
         io.emit('deleteBroadcaster', id);
         localStorage.setItem('broadcasterRegistry', JSON.stringify(broadcasterRegistry));
+        res.send(id);
     });
 
     app.post('/beacon', (req, res) => {
@@ -117,6 +120,8 @@ function setupExpress() {
         console.log(JSON.stringify(req.body));
         beaconRegistry[id] = req.body;
         io.emit('beacon', JSON.stringify(beaconRegistry[id]));
+        localStorage.setItem('beaconRegistry', JSON.stringify(beaconRegistry));
+        res.send(JSON.stringify(req.body));
     });
 
     // Basic 404 Page
@@ -159,13 +164,16 @@ function setupExpress() {
 //Hash map of (id, broadcaster) pairs
 var broadcasterRegistry = {};
 
-if (localStorage.getItem('broadcasterRegistry')){
+if (localStorage.getItem('broadcasterRegistry')) {
     broadcasterRegistry = JSON.parse(localStorage.getItem('broadcasterRegistry'));
 }
 
 //hash map of (id, beacon) pairs
 var beaconRegistry = {};
 
+if (localStorage.getItem('beaconRegistry')) {
+    beaconRegistry = JSON.parse(localStorage.getItem('beaconRegistry'));
+}
 
 beaconRegistry['587'] = {
     id: '587',

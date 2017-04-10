@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function mapController($scope, $http) {
+    function mapController($scope, $http, $mdToast) {
         var canvas = $('#mapCanvas')[0];
         var context = canvas.getContext('2d');
 
@@ -86,18 +86,36 @@
 
         $scope.postBroadcaster = function(broadcaster) {
             if (broadcaster.id && broadcaster.id.length > 0) {
-                $http.post(hostUrl() + '/broadcaster', $scope.localCopy);
+                $http.post(hostUrl() + '/broadcaster', $scope.localCopy).then(function() {
+                    if ($scope.selectedBeacon) {
+                        $scope.selectBeacon(beaconRegistry[$scope.selectedBeacon.id]);
+                    }
+                }, function() {
+                    $mdToast.show($mdToast.simple().textContent('Error posting, see log for details'));
+                });
             }
         };
 
         $scope.deleteBroadcaster = function(id) {
             $http.post(hostUrl() + '/deleteBroadcaster', {
                 id: id
+            }).then(function() {
+                if ($scope.selectedBeacon) {
+                    $scope.selectBeacon(beaconRegistry[$scope.selectedBeacon.id]);
+                }
+            }, function() {
+                $mdToast.show($mdToast.simple().textContent('Error posting, see log for details'));
             });
         };
 
         $scope.postBeacon = function(target) {
-            $http.post(hostUrl() + '/beacon', target);
+            $http.post(hostUrl() + '/beacon', target).then(function() {
+                if ($scope.selectedBeacon) {
+                    $scope.selectBeacon(beaconRegistry[$scope.selectedBeacon.id]);
+                }
+            }, function() {
+                $mdToast.show($mdToast.simple().textContent('Error posting, see log for details'));
+            });
         };
 
         $scope.setBeaconFilter = function(filter) {
@@ -114,9 +132,9 @@
             $scope.state = 'beacon';
         }
 
-        function beaconMatches(beacon, text){
-            return !text || 
-                (beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) || 
+        function beaconMatches(beacon, text) {
+            return !text ||
+                (beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
                 beacon.id.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0;
         }
 
@@ -135,6 +153,7 @@
     angular.module('app').controller('mapController', [
         '$scope',
         '$http',
+        '$mdToast',
         mapController
     ]);
 })();

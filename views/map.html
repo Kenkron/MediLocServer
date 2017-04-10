@@ -14,7 +14,7 @@
 				md-selected-item="selectedItem"
 				md-search-text-change="setBeaconFilter(searchText)"
 				md-search-text="searchText"
-				md-selected-item-change="selectBeacon(item)"
+				md-selected-item-change="setBeaconFilter(searchText);selectBeacon(item)"
 				md-items="item in searchBeacons(searchText)"
 				md-item-text="item.id"
 				md-min-length="0"
@@ -46,7 +46,7 @@
 					<label>Time Last Seen</label>
 					<input disabled type="text" name="broadcaster" ng-value="localCopy.lastSeen | date:'medium'">
 				</md-input-container>
-				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update</md-button>
+				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update{{wasModified(selectedBeacon) ? '*' : ''}}</md-button>
 			</div>
 			<div ng-show="state === 'broadcaster'">
 				<h3>Broadcaster</h3>
