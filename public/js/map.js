@@ -5,13 +5,21 @@
         var canvas = $('#mapCanvas')[0];
         var context = canvas.getContext('2d');
 
+        var basement = new BeaconFloor('basement', $('#basement')[0], {
+            x: 0,
+            y: 0,
+            width: 800,
+            height: 800
+        }, broadcasterRegistry, beaconRegistry);
+
         var groundFloor = new BeaconFloor('ground', $('#ground')[0], {
             x: 0,
             y: 0,
-            width: 640,
-            height: 400
+            width: 800,
+            height: 800
         }, broadcasterRegistry, beaconRegistry);
-        var beaconMap = new BeaconMap([groundFloor], broadcasterRegistry, beaconRegistry);
+
+        var beaconMap = new BeaconMap([basement, groundFloor], broadcasterRegistry, beaconRegistry);
         $scope.beaconMap = beaconMap;
         //display nothing in the sidenav
         $scope.state = 'pristine';
@@ -19,6 +27,9 @@
         renderCallback = function() {
             beaconMap.render(context);
         };
+
+        $scope.render = renderCallback;
+
         console.log('set renderCallback');
 
         $scope.canvasClick = function(evt) {
@@ -52,8 +63,8 @@
                 jQuery.extend($scope.localCopy, $scope.selectedBeacon);
             } else if ($scope.selectedBroadcaster) {
                 beaconMap.highlight = $scope.selectedBroadcaster;
-                beaconMap.cursor.x = $scope.selectedBroadcaster.x;
-                beaconMap.cursor.y = $scope.selectedBroadcaster.y;
+                beaconMap.cursor.x = beaconMap.currentFloor.broadcasterLocations[$scope.selectedBroadcaster.id].x;
+                beaconMap.cursor.y = beaconMap.currentFloor.broadcasterLocations[$scope.selectedBroadcaster.id].y;
                 $scope.state = 'broadcaster';
                 jQuery.extend($scope.localCopy, $scope.selectedBroadcaster);
             } else {

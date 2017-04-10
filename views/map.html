@@ -6,28 +6,39 @@
 		<md-sidenav
 			class="md-sidenav-left"
 			md-component-id="left"
-			md-is-locked-open="true"
+			md-is-locked-open="$mdMedia('gt-md')"
 			md-whiteframe="4"
 			layout-padding>
-			<md-autocomplete
-				md-no-cache="true"
-				md-selected-item="selectedItem"
-				md-search-text-change="setBeaconFilter(searchText)"
-				md-search-text="searchText"
-				md-selected-item-change="setBeaconFilter(searchText);selectBeacon(item)"
-				md-items="item in searchBeacons(searchText)"
-				md-item-text="item.id"
-				md-min-length="0"
-				placeholder="Find Beacon">
-				<md-item-template layout="column">
-					<span class="item-title"><b>{{item.name}}</b></span>
-					<span class="item-metadata">id: {{item.id}}</span>
-				</md-item-template>
-				<md-not-found>
-					No states matching "{{ctrl.searchText}}" were found.
-					<a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a>
-				</md-not-found>
-			</md-autocomplete>
+			<div layout-margin md-whiteframe="4">
+				<md-autocomplete
+					md-no-cache="true"
+					md-selected-item="selectedItem"
+					md-search-text-change="setBeaconFilter(searchText)"
+					md-search-text="searchText"
+					md-selected-item-change="setBeaconFilter(searchText);selectBeacon(item)"
+					md-items="item in searchBeacons(searchText)"
+					md-item-text="item.id"
+					md-min-length="0"
+					placeholder="Find Beacon">
+					<md-item-template layout="column">
+						<span class="item-title"><b>{{item.name}}</b></span>
+						<span class="item-metadata">id: {{item.id}}</span>
+					</md-item-template>
+					<md-not-found>
+						No states matching "{{ctrl.searchText}}" were found.
+						<a ng-click="ctrl.newState(ctrl.searchText)">Create a new one!</a>
+					</md-not-found>
+				</md-autocomplete>
+				<md-input-container>
+					<label>Floor</label>
+					<md-select ng-model="beaconMap.currentFloor" ng-change="render()">
+						<md-option ng-repeat="floor in beaconMap.floors" ng-value="floor">
+							{{floor.floorName}}
+						</md-option>
+					</md-select>
+				</md-input-container>
+			</div>
+			<md-separator></md-separator>
 			<div ng-show="state === 'beacon'">
 				<h3>Beacon</h3>
 				<md-input-container>
@@ -82,7 +93,7 @@
 			</div>
 		</md-sidenav>
 		<md-content>
-			<canvas id="mapCanvas" width="640" height="400" ng-click="canvasClick($event)"></canvas>
+			<canvas id="mapCanvas" width="800" height="800" ng-click="canvasClick($event)"></canvas>
 		</md-content>
 	</section>
 </div>
