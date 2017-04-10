@@ -170,7 +170,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 			context.beginPath();
 			context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
 			var col = hashString(beacon.id) % COLORS.length;
-			var alpha = Math.max(0.33, 1 - (new Date().getTime() - beacon.lastSeen)/60000);
+			var alpha = 0.33 + 0.67 * Math.max(0, 1 - (new Date().getTime() - beacon.lastSeen)/600000);
 			context.fillStyle = colorAlpha(col, alpha);
 			context.fill();
 			this.beaconLocations[beacon.id] = {
