@@ -58,7 +58,7 @@ function BeaconMap(floors, broadcasters, beacons) {
 	this.beacons = beacons;
 	this.currentFloor = floors[0];
 	this.filter = null;
-	this.showUnnamed = true;
+	this.showUnnamed = false;
 
 	this.render = function(context) {
 		context.save();

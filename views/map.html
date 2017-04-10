@@ -1,13 +1,14 @@
 <div>
 	<md-toolbar>
-		<h2 layout-margin>MediLoc</h2>
+		<md-button ng-click="toggleSidenav()"><h2>MediLoc</h2></md-button>
+		<span flex="100"></span>
 	</md-toolbar>
 	<section layout="row" flex>
 		<md-sidenav
 			class="md-sidenav-left"
 			md-component-id="left"
-			md-is-locked-open="$mdMedia('gt-md')"
-			md-whiteframe="4"
+			md-is-locked-open="$mdMedia('gt-sm')"
+			md-whiteframe="4",
 			layout-padding>
 			<fieldset>
 				<legend>Navigation</legend>
@@ -101,8 +102,6 @@
 				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Broadcaster Here</md-button>
 			</div>
 		</md-sidenav>
-		<md-content>
-			<canvas id="mapCanvas" width="800" height="800" ng-click="canvasClick($event)"></canvas>
-		</md-content>
+		<canvas id="mapCanvas" width="800" height="800" ng-click="canvasClick($event)"></canvas>
 	</section>
 </div>

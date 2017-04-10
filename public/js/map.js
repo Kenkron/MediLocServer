@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function mapController($scope, $http, $mdToast) {
+    function mapController($scope, $http, $mdToast, $mdSidenav) {
         var canvas = $('#mapCanvas')[0];
         var context = canvas.getContext('2d');
 
@@ -150,7 +150,7 @@
         $scope.setBeaconFilter = function(filter) {
             beaconMap.filter = filter;
             beaconMap.render(context);
-        }
+        };
 
         $scope.selectBeacon = function(beacon) {
             $scope.selectedBeacon = beacon;
@@ -159,13 +159,13 @@
             beaconMap.cursor = null;
             beaconMap.render(context);
             $scope.state = 'beacon';
-        }
+        };
 
         function beaconMatches(beacon, text) {
             return !text ||
                 (beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
                 beacon.id.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0;
-        }
+        };
 
         $scope.searchBeacons = function(filter) {
             var matches = [];
@@ -176,13 +176,18 @@
                 }
             }
             return matches;
-        }
+        };
+
+        $scope.toggleSidenav = function() {
+            $mdSidenav('left').toggle();
+        };
     }
 
     angular.module('app').controller('mapController', [
         '$scope',
         '$http',
         '$mdToast',
+        '$mdSidenav',
         mapController
     ]);
 })();
