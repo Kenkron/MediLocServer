@@ -27,6 +27,12 @@ function getColor() {
 	return COLORS[colorCounter++];
 }
 
+function beaconMatches(beacon, text){
+	return !text || 
+		(beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) || 
+		beacon.id.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0;
+}
+
 /**
  * A map on which to render beacons
  * @constructor
@@ -40,11 +46,12 @@ function BeaconMap(floors, broadcasters, beacons) {
 	this.broadcasters = broadcasters;
 	this.beacons = beacons;
 	this.currentFloor = floors[0];
+	this.filter = null;
 
 	this.render = function(context) {
 		context.save();
 		context.fillStyle = 'white';
-		this.currentFloor.render(context);
+		this.currentFloor.render(context, this.filter);
 		//any additional chrome goes here
 		var cursor = this.cursor;
 		if (cursor) {
@@ -81,7 +88,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	this.beaconLocations = {};
 	this.broadcasterLocations = {};
 
-	this.render = function(context) {
+	this.render = function(context, filter) {
 		context.save();
 		var width = context.canvas.width;
 		var height = context.canvas.height;
@@ -98,7 +105,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		for (var i = 0; i < Object.keys(broadcasters).length; i++) {
 			var broadcaster = broadcasters[Object.keys(broadcasters)[i]];
 			if (broadcaster.floor === floorName) {
-				this.renderBroadcaster(broadcaster, context);
+				this.renderBroadcaster(broadcaster, context, filter);
 			}
 		}
 
@@ -107,8 +114,10 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 
 	/**
 	 * Renders a broadcaster and its corresponding beacons onto a given context
+	 *
+	 * @param filter if provided, only beacons that 'match' this string will be rendered
 	 */
-	this.renderBroadcaster = function(broadcaster, context) {
+	this.renderBroadcaster = function(broadcaster, context, filter) {
 		context.save();
 
 		var width = context.canvas.width;
@@ -133,9 +142,12 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 				localBeacons.push(beacon);
 			}
 		}
-		var radius = Math.max(localBeacons.length * 4 * DOT_RADIUS / 3.1416,
+		var radius = Math.max(localBeacons.length * 2 * DOT_RADIUS / 3.1416,
 			8 * DOT_RADIUS / 3.1416);
 		for (var i = 0; i < localBeacons.length; i++) {
+			if (!beaconMatches(localBeacons[i], filter)){
+				continue;
+			}
 			var angle = Math.PI * 2 * i / localBeacons.length;
 			var x2 = x + radius * Math.cos(angle);
 			var y2 = y + radius * Math.sin(angle);

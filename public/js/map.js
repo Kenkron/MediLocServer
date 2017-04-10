@@ -12,7 +12,7 @@
             height: 400
         }, broadcasterRegistry, beaconRegistry);
         var beaconMap = new BeaconMap([groundFloor], broadcasterRegistry, beaconRegistry);
-
+        $scope.beaconMap = beaconMap;
         //display nothing in the sidenav
         $scope.state = 'pristine';
 
@@ -24,9 +24,11 @@
         $scope.canvasClick = function(evt) {
             var x = evt.offsetX;
             var y = evt.offsetY;
+            beaconMap.highlight = null;
             beaconMap.cursor = {
                 x: x,
-                y: y
+                y: y,
+                floor: beaconMap.currentFloor.floorName
             };
             $scope.clickX = x;
             $scope.clickY = y;
@@ -43,17 +45,15 @@
 
             $scope.localCopy = {};
             if ($scope.selectedBeacon) {
-                beaconMap.cursor = {
-                    x: beaconMap.currentFloor.beaconLocations[$scope.selectedBeacon.id].x,
-                    y: beaconMap.currentFloor.beaconLocations[$scope.selectedBeacon.id].y
-                };
+                beaconMap.highlight = $scope.selectedBeacon;
+                beaconMap.cursor.x = beaconMap.currentFloor.beaconLocations[$scope.selectedBeacon.id].x;
+                beaconMap.cursor.y = beaconMap.currentFloor.beaconLocations[$scope.selectedBeacon.id].y;
                 $scope.state = 'beacon';
                 jQuery.extend($scope.localCopy, $scope.selectedBeacon);
             } else if ($scope.selectedBroadcaster) {
-                beaconMap.cursor = {
-                    x: $scope.selectedBroadcaster.x,
-                    y: $scope.selectedBroadcaster.y
-                };
+                beaconMap.highlight = $scope.selectedBroadcaster;
+                beaconMap.cursor.x = $scope.selectedBroadcaster.x;
+                beaconMap.cursor.y = $scope.selectedBroadcaster.y;
                 $scope.state = 'broadcaster';
                 jQuery.extend($scope.localCopy, $scope.selectedBroadcaster);
             } else {
@@ -72,12 +72,12 @@
          * @return true iff the target is the same as $scope.localCopy
          * */
         $scope.wasModified = function(target) {
-            if (!localCopy || !target)
+            if (!$scope.localCopy || !target)
                 return true;
-            var keys = Object.keys(localCopy);
+            var keys = Object.keys($scope.localCopy);
             var i;
             for (i = 0; i < keys.length; i++) {
-                if (target[keys[i]] !== localCopy[keys[i]]) {
+                if (target[keys[i]] !== $scope.localCopy[keys[i]]) {
                     return true;
                 }
             }
@@ -99,6 +99,37 @@
         $scope.postBeacon = function(target) {
             $http.post(hostUrl() + '/beacon', target);
         };
+
+        $scope.setBeaconFilter = function(filter) {
+            beaconMap.filter = filter;
+            beaconMap.render(context);
+        }
+
+        $scope.selectBeacon = function(beacon) {
+            $scope.selectedBeacon = beacon;
+            $scope.localCopy = {};
+            jQuery.extend($scope.localCopy, $scope.selectedBeacon);
+            beaconMap.cursor = null;
+            beaconMap.render(context);
+            $scope.state = 'beacon';
+        }
+
+        function beaconMatches(beacon, text){
+            return !text || 
+                (beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) || 
+                beacon.id.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0;
+        }
+
+        $scope.searchBeacons = function(filter) {
+            var matches = [];
+            for (var i = 0; i < Object.keys(beaconRegistry).length; i++) {
+                var beacon = beaconRegistry[Object.keys(beaconRegistry)[i]];
+                if (beaconMatches(beacon, filter)) {
+                    matches.push(beacon);
+                }
+            }
+            return matches;
+        }
     }
 
     angular.module('app').controller('mapController', [

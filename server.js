@@ -80,10 +80,20 @@ function setupExpress() {
     });
 
     app.post('/found', (req, res) => {
+        console.log(JSON.stringify(req.query));
         var broadcaster = req.query.uid;
         var beacon = req.query.beacon;
-        console.log("found " + beacon  + "at: " + broadcaster);
-        publishBeacon(beacon);
+        console.log("found " + beacon  + " at: " + broadcaster);
+        if (!beaconRegistry[beacon]){
+            beaconRegistry[beacon] = {
+                id: beacon
+            };
+        }
+        beaconRegistry[beacon].broadcaster = broadcaster;
+        beaconRegistry[beacon].lastSeen = new Date().getTime();
+        var json = JSON.stringify(beaconRegistry[beacon])
+        io.emit('beacon', json);
+        res.send(json);
     });
 
     app.post('/broadcaster', (req, res) => {
@@ -168,18 +178,6 @@ beaconRegistry['954'] = {
     broadcaster: '000',
     lastSeen: new Date().getTime()
 };
-
-function publishBeacon(uid) {
-    if (typeof(beacons[uid]) === "undefined") {
-        console.log('no such beacon');
-        return;
-    }
-    io.emit('debug', {
-        type: 'POST',
-        client: uid,
-        msg: '{"type": "ANDROID", "count": "' + beacons[uid] + '", "max": "3"}'
-    });
-}
 
 // -- Setup the application
 setupExpress();

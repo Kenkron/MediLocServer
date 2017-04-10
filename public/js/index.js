@@ -81,7 +81,7 @@ function hostUrl() {
     app.run([
         '$state',
         function($state) {
-            $state.go('broadcasters');
+            $state.go('map');
         }
     ]);
 })();
