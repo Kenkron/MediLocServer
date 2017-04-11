@@ -70,7 +70,7 @@
 				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update{{wasModified(selectedBeacon) ? '*' : ''}}</md-button>
 			</div>
 			<div ng-show="state === 'broadcaster'">
-				<h3>Broadcaster</h3>
+				<h3>Detecter</h3>
 				<md-input-container>
 					<label>ID</label>
 					<input disabled type="text" name="id" ng-model="localCopy.id">
@@ -79,12 +79,18 @@
 					<label>Name</label>
 					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
-				<md-input-container>
+				<md-input-container flex>
 					<label>Floor</label>
-					<input type="text" name="floor" ng-model="localCopy.floor">
+					<md-select ng-model="localCopy.floor">
+						<md-option ng-repeat="floor in beaconMap.floors" ng-value="floor.floorName">
+							{{floor.floorName}}
+						</md-option>
+					</md-select>
 				</md-input-container>
-				<md-button class="md-warn md-raised" ng-click="deleteBroadcaster(localCopy.id)">Delete</md-button>
-				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">Update</md-button>
+				<div layout="row">
+					<md-button class="md-warn md-raised" ng-click="deleteBroadcaster(localCopy.id)">Delete</md-button>
+					<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">Update</md-button>
+				</div>
 			</div>
 			<div ng-show="state === 'createBroadcaster'">
 				<md-input-container>
@@ -99,7 +105,7 @@
 					<label>Name</label>
 					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
-				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Broadcaster Here</md-button>
+				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Detecter Here</md-button>
 			</div>
 		</md-sidenav>
 		<md-container style="overflow:scroll">

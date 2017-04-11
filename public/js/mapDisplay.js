@@ -145,8 +145,10 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 
 		//render broadcaster as black square
 		context.strokeStyle = 'black';
+		context.fillStyle = '#FF00FF';
 		context.beginPath();
 		context.rect(x - DOT_RADIUS, y - DOT_RADIUS, DOT_RADIUS * 2, DOT_RADIUS * 2);
+		context.fill();
 		context.stroke();
 
 		localBeacons = [];
@@ -171,8 +173,8 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 			var y2 = y + radius * Math.sin(angle);
 			context.beginPath();
 			context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
-			var col = hashString(beacon.id) % COLORS.length;
-			var alpha = 0.33 + 0.67 * Math.max(0, 1 - (new Date().getTime() - beacon.lastSeen)/600000);
+			var col = hashString(beacon.id) % 5;
+			var alpha = 0.5 + 0.5 * Math.max(0, 1 - (new Date().getTime() - beacon.lastSeen)/600000);
 			context.fillStyle = colorAlpha(col, alpha);
 			context.fill();
 			this.beaconLocations[beacon.id] = {
