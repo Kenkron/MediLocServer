@@ -61,6 +61,8 @@ function BeaconMap(floors, broadcasters, beacons) {
 	this.showUnnamed = false;
 
 	this.render = function(context) {
+		context.canvas.width = this.currentFloor.image.width;
+		context.canvas.height = this.currentFloor.image.height;
 		context.save();
 		context.fillStyle = 'white';
 		this.currentFloor.render(context, this.filter, this.showUnnamed);

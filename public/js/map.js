@@ -1,6 +1,16 @@
 (function() {
     'use strict';
 
+    function getFloor(id, beaconRegistry, broadcasterRegistry){
+        var image = $('#'+id)[0];
+        return new BeaconFloor(id, image, {
+            x: 0,
+            y: 0,
+            width: image.width,
+            height: image.height
+        }, beaconRegistry, broadcasterRegistry);
+    }
+
     function mapController($scope, $http, $mdToast, $mdSidenav) {
         var canvas = $('#mapCanvas')[0];
         var context = canvas.getContext('2d');
@@ -12,23 +22,16 @@
             height: 800
         }, broadcasterRegistry, beaconRegistry);
 
-        var groundFloor = new BeaconFloor('ground', $('#ground')[0], {
-            x: 0,
-            y: 0,
-            width: 800,
-            height: 800
-        }, broadcasterRegistry, beaconRegistry);
-
-
-        var floor1 = new BeaconFloor('floor 1', $('#floor1')[0], {
-            x: 0,
-            y: 0,
-            width: 800,
-            height: 800
-        }, broadcasterRegistry, beaconRegistry);
-
-        var beaconMap = new BeaconMap([floor1, groundFloor, basement], broadcasterRegistry, beaconRegistry);
-        beaconMap.currentFloor = groundFloor;
+        var floors = [
+            getFloor('5thFloor', broadcasterRegistry, beaconRegistry),
+            getFloor('4thFloor', broadcasterRegistry, beaconRegistry),
+            getFloor('3rdFloor', broadcasterRegistry, beaconRegistry),
+            getFloor('2ndFloor', broadcasterRegistry, beaconRegistry),
+            getFloor('1stFloor', broadcasterRegistry, beaconRegistry),
+            getFloor('basement', broadcasterRegistry, beaconRegistry)
+        ];
+        var beaconMap = new BeaconMap(floors, broadcasterRegistry, beaconRegistry);
+        beaconMap.currentFloor = floors[4];
         $scope.beaconMap = beaconMap;
         //display nothing in the sidenav
         $scope.state = 'pristine';

@@ -7,7 +7,7 @@
 		<md-sidenav
 			class="md-sidenav-left"
 			md-component-id="left"
-			md-is-locked-open="$mdMedia('gt-sm')"
+			md-is-locked-open="$mdMedia('gt-md')"
 			md-whiteframe="4",
 			layout-padding>
 			<fieldset>
@@ -102,6 +102,8 @@
 				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Broadcaster Here</md-button>
 			</div>
 		</md-sidenav>
-		<canvas id="mapCanvas" width="800" height="800" ng-click="canvasClick($event)"></canvas>
+		<md-container style="overflow:scroll">
+			<canvas id="mapCanvas" width="800" height="800" ng-click="canvasClick($event)"></canvas>
+		</md-container>
 	</section>
 </div>
