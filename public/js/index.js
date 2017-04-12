@@ -6,9 +6,9 @@ beaconRegistry = {};
 
 var renderCallback = null;
 
-// Handle socket events here
-//--------------------------
-// Adds to the debug list
+//Socket event handlers
+//---------------------
+
 socket.on('broadcaster', data => {
     data = JSON.parse(data);
     console.log('broadcaster ' + data.id);
@@ -18,9 +18,6 @@ socket.on('broadcaster', data => {
     }
 });
 
-// Handle socket events here
-//--------------------------
-// Adds to the debug list
 socket.on('deleteBroadcaster', data => {
     console.log('deleting broadcaster ' + data);
     delete broadcasterRegistry[data];
@@ -29,9 +26,6 @@ socket.on('deleteBroadcaster', data => {
     }
 });
 
-// Handle socket events here
-//--------------------------
-// Adds to the debug list
 socket.on('beacon', data => {
     data = JSON.parse(data);
     console.log('beacon ' + data.id);
@@ -49,7 +43,10 @@ socket.on('deleteBeacon', data => {
     }
 });
 
-
+/**Gets the root url of the server this page is hosted on
+ *
+ * @return the root url
+ */
 function hostUrl() {
     var pathArray = location.href.split('/');
     var protocol = pathArray[0];

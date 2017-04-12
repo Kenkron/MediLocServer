@@ -11,6 +11,13 @@ var COLORS = [
 
 var colorCounter = 0;
 
+/**Gets a color from a predefined list with the given alpha
+ *
+ * @param {number} color - color index [1-5]
+ * @param {number} alpah - the opacity [0-1]
+ *
+ * @return {string} a rgba encoded color, fit for canvas context styles
+ **/
 function colorAlpha(color, alpha){
 	colors = [
 		'rgba(255,0,0,',
@@ -22,6 +29,10 @@ function colorAlpha(color, alpha){
 	return colors[color] + alpha + ')';
 }
 
+/**Returns a hash code for a string
+ *
+ * @param {string} str - the string to hash
+ * @return {number} the value of the hash*/
 hashString = function(str) {
 	var hash = 0,
 		i, chr;
@@ -34,10 +45,13 @@ hashString = function(str) {
 	return hash;
 };
 
-function getColor() {
-	return COLORS[colorCounter++];
-}
-
+/**For searching, returns true iff the beacon might match the search query
+ * 
+ * @param {object} beacon - The beacon to check
+ * @param {object} text - Search query
+ * 
+ * @return {boolean} beacon matches search
+ */
 function beaconMatches(beacon, text){
 	return !text || 
 		(beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) || 
@@ -45,11 +59,12 @@ function beaconMatches(beacon, text){
 }
 
 /**
- * A map on which to render beacons
+ * @classdesc A multi-floor map on which to render beacons
  * @constructor
  * 
- * @param floors a list of BeaconFloor objects
- * @param beacons the list of beacons
+ * @param {list} floors - list of BeaconFloor objects in this map
+ * @param {object} broadcasters - map of (id, beacon detector) pairs
+ * @param {object} beacons - map of (id, beacon) pairs
  **/
 function BeaconMap(floors, broadcasters, beacons) {
 	var beaconMap = this;
@@ -60,6 +75,10 @@ function BeaconMap(floors, broadcasters, beacons) {
 	this.filter = null;
 	this.showUnnamed = false;
 
+	/** Renders the map and chrome
+	 *
+	 * @param {CanvasRenderingContext2D} context - the context on which to render
+	 **/
 	this.render = function(context) {
 		context.canvas.width = this.currentFloor.image.width;
 		context.canvas.height = this.currentFloor.image.height;
@@ -84,12 +103,14 @@ function BeaconMap(floors, broadcasters, beacons) {
 }
 
 /**
- * Represents the floor of a building
+ * @classdesc Represents the floor of a building
  * @constructor
- * @param floorName
- * @param image
- * @param rect the area covered by this floor (relative to beacons)
- * @param beacons the list of beacons
+ *
+ * @param {string} floorName - human readable name of this floor
+ * @param image - the visible floorplan of this building
+ * @param rect - the area covered by this floor (relative to beacons)
+ * @param broadcasters - the list of detectors
+ * @param beacons - the list of beacons
  */
 function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	this.floorName = floorName;
@@ -102,6 +123,12 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	this.beaconLocations = {};
 	this.broadcasterLocations = {};
 
+	/**Renders this floor, and all of it's beacons
+	 * 
+	 * @param {CanvasRenderingContext2D} context - the context on which to render
+	 * @param {string} filter - if provided, only beacons that 'match' this string will be rendered
+	 * @param {boolean} showUnnamed - if truthy, shows beacons without a name (otherwise omitted)
+	 */
 	this.render = function(context, filter, showUnnamed) {
 		context.save();
 		var width = context.canvas.width;
@@ -127,9 +154,12 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 	};
 
 	/**
-	 * Renders a broadcaster and its corresponding beacons onto a given context
+	 * Renders a detector and its corresponding beacons onto a given context
 	 *
-	 * @param filter if provided, only beacons that 'match' this string will be rendered
+	 * @param broadcaster - the detector to render
+	 * @param {CanvasRenderingContext2D} context - the context on which to render
+	 * @param {string} filter - if provided, only beacons that 'match' this string will be rendered
+	 * @param {boolean} showUnnamed - if truthy, shows beacons without a name (otherwise omitted)
 	 */
 	this.renderBroadcaster = function(broadcaster, context, filter, showUnnamed) {
 		context.save();
@@ -185,6 +215,13 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		context.restore();
 	};
 
+	/**Gets the beacon (if any) that was rendered at the given location on this floor
+	 *
+	 * @param x
+	 * @param y
+	 *
+	 * @return the beacon object
+	 **/
 	this.getBeaconAt = function(x, y) {
 		var id;
 		for (var i = 0; i < Object.keys(this.beaconLocations).length; i++) {
@@ -198,6 +235,12 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		return null;
 	};
 
+	/**Gets the broadcaster (if any) that was rendered at the given loation on this floor
+	 *
+	 * @param x
+	 * @param y
+	 *
+	 * @return the detector object*/
 	this.getBroadcasterAt = function(x, y) {
 		var id;
 		for (var i = 0; i < Object.keys(this.broadcasterLocations).length; i++) {
@@ -210,4 +253,6 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		}
 		return null;
 	};
+
+	return this;
 }

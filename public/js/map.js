@@ -1,8 +1,8 @@
 (function() {
     'use strict';
 
-    function getFloor(id, beaconRegistry, broadcasterRegistry){
-        var image = $('#'+id)[0];
+    function getFloor(id, beaconRegistry, broadcasterRegistry) {
+        var image = $('#' + id)[0];
         return new BeaconFloor(id, image, {
             x: 0,
             y: 0,
@@ -11,6 +11,13 @@
         }, beaconRegistry, broadcasterRegistry);
     }
 
+    /**Controls the functionality of the page displaying the map
+     * (executes when the map page is loaded0
+     *
+     * @param $scope - Angular's hook to the webpage's namespace
+     * @param $http - Angular's restful library
+     * @param $mdToast - Angular's message system (for in page error displays)
+     * @param $mdSidenav - Angular's responsive sidenav element callbacks*/
     function mapController($scope, $http, $mdToast, $mdSidenav) {
         var canvas = $('#mapCanvas')[0];
         var context = canvas.getContext('2d');
@@ -36,6 +43,7 @@
         //display nothing in the sidenav
         $scope.state = 'pristine';
 
+        //sets the rendering callback for restful requests to update the maps
         renderCallback = function() {
             beaconMap.render(context);
         };
@@ -43,6 +51,9 @@
 
         console.log('set renderCallback');
 
+        /**Handles the map canvas's click events
+         *
+         * @param {mouseEvent} event*/
         $scope.canvasClick = function(evt) {
             var x = evt.offsetX;
             var y = evt.offsetY;
@@ -88,10 +99,11 @@
             beaconMap.render(context);
         };
 
-        /**
-         * Compares the target object to the local copy.
+        /**Compares the target object to the local copy.
          * 
-         * @return true iff the target is the same as $scope.localCopy
+         * @param target - the original, unmodified copy
+         *
+         * @return true iff the target is different from $scope.localCopy
          * */
         $scope.wasModified = function(target) {
             if (!$scope.localCopy || !target)
@@ -106,6 +118,9 @@
             return false;
         };
 
+        /**Makes a post request to give server information about a detecter
+         *
+         * @param broadcaster - the detecter the server needs to know about*/
         $scope.postBroadcaster = function(broadcaster) {
             if (broadcaster.id && broadcaster.id.length > 0) {
                 $http.post(hostUrl() + '/broadcaster', $scope.localCopy).then(function() {
@@ -118,6 +133,9 @@
             }
         };
 
+        /**Makes a post request to delete a detector from the server
+         * 
+         * @param {string} id - the id of the detecter the server needs to delete*/
         $scope.deleteBroadcaster = function(id) {
             $http.post(hostUrl() + '/deleteBroadcaster', {
                 id: id
@@ -130,6 +148,9 @@
             });
         };
 
+        /**Makes a post request to give server information about a beacon
+         *
+         * @param target - the beacon the server needs to know about*/
         $scope.postBeacon = function(target) {
             $http.post(hostUrl() + '/beacon', target).then(function() {
                 if ($scope.selectedBeacon) {
@@ -140,6 +161,9 @@
             });
         };
 
+        /**Makes a post request to delete a beacon from the server
+         * 
+         * @param {string} id - the id of the beacon the server needs to delete*/
         $scope.deleteBeacon = function(id) {
             $http.post(hostUrl() + '/deleteBeacon', {
                 id: id
@@ -150,11 +174,17 @@
             });
         };
 
+        /**Updates the map to show only beacons that match a search query
+         * 
+         * @param {string} filter - search query*/
         $scope.setBeaconFilter = function(filter) {
             beaconMap.filter = filter;
             beaconMap.render(context);
         };
 
+        /**Sets the state and selected beacon to show a desired beacon
+         *
+         * @param beacon - desired beacon*/
         $scope.selectBeacon = function(beacon) {
             $scope.selectedBeacon = beacon;
             $scope.localCopy = {};
@@ -164,12 +194,22 @@
             $scope.state = 'beacon';
         };
 
+        /**For searching, returns true iff the beacon might match the search query
+         * 
+         * @param {object} beacon - The beacon to check
+         * @param {object} text - Search query
+         * 
+         * @return {boolean} beacon matches search
+         */
         function beaconMatches(beacon, text) {
             return !text ||
                 (beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
                 beacon.id.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0;
         };
 
+        /**Get a list of beacons that match a given search query, using beaconMatches
+         *
+         * @param {string} filter - search query*/
         $scope.searchBeacons = function(filter) {
             var matches = [];
             for (var i = 0; i < Object.keys(beaconRegistry).length; i++) {
@@ -181,6 +221,7 @@
             return matches;
         };
 
+        /**Shows/hides the sidenav that controlls map interaction*/
         $scope.toggleSidenav = function() {
             $mdSidenav('left').toggle();
         };
