@@ -76,12 +76,6 @@ function hostUrl() {
             templateUrl: 'map.html',
             controller: 'mapController'
         });
-
-        $stateProvider.state('broadcasters', {
-            url: '/broadcasters',
-            templateUrl: 'broadcasters.html',
-            controller: 'broadcastersController'
-        });
     }]);
 
     app.run([
