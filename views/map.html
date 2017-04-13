@@ -83,7 +83,7 @@
 				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update{{wasModified(selectedBeacon) ? '*' : ''}}</md-button>
 			</div>
 			<div ng-show="state === 'broadcaster'">
-				<h3>Detecter</h3>
+				<h3>Detector</h3>
 				<md-input-container>
 					<label>ID</label>
 					<input disabled type="text" name="id" ng-model="localCopy.id">
@@ -118,7 +118,7 @@
 					<label>Name</label>
 					<input type="text" name="name" ng-model="localCopy.name">
 				</md-input-container>
-				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Detecter Here</md-button>
+				<md-button class="md-raised" ng-click="postBroadcaster(localCopy)">New Detector Here</md-button>
 			</div>
 		</md-sidenav>
 		<md-container style="overflow:scroll">
