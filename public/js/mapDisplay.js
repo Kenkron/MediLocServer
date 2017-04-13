@@ -1,4 +1,4 @@
-DOT_RADIUS = 8;
+DOT_RADIUS = 12;
 
 var COLORS = [
 	'red',
@@ -18,14 +18,14 @@ var colorCounter = 0;
  *
  * @return {string} a rgba encoded color, fit for canvas context styles
  **/
-function colorAlpha(color, alpha){
+function colorAlpha(color, alpha) {
 	colors = [
 		'rgba(255,0,0,',
 		'rgba(255,255,0,',
 		'rgba(0,255,0,',
 		'rgba(0,255,255,',
 		'rgba(0,0,255,'
-		];
+	];
 	return colors[color] + alpha + ')';
 }
 
@@ -52,9 +52,9 @@ hashString = function(str) {
  * 
  * @return {boolean} beacon matches search
  */
-function beaconMatches(beacon, text){
-	return !text || 
-		(beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) || 
+function beaconMatches(beacon, text) {
+	return !text ||
+		(beacon.name && beacon.name.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0) ||
 		beacon.id.toString().toLowerCase().indexOf(text.toLowerCase()) >= 0;
 }
 
@@ -184,7 +184,7 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 		localBeacons = [];
 		for (var i = 0; i < Object.keys(beacons).length; i++) {
 			var beacon = beacons[Object.keys(beacons)[i]];
-			if (showUnnamed || (beacon.name && beacon.name.length > 0)){
+			if (showUnnamed || (beacon.name && beacon.name.length > 0)) {
 				if (beacon.broadcaster === broadcaster.id) {
 					localBeacons.push(beacon);
 				}
@@ -194,19 +194,23 @@ function BeaconFloor(floorName, image, rect, broadcasters, beacons) {
 			8 * DOT_RADIUS / 3.1416);
 		for (var i = 0; i < localBeacons.length; i++) {
 			var beacon = localBeacons[i];
-			if (!beaconMatches(beacon, filter)){
+			if (!beaconMatches(beacon, filter)) {
 				continue;
 			}
-			
+
 			var angle = Math.PI * 2 * i / localBeacons.length;
 			var x2 = x + radius * Math.cos(angle);
 			var y2 = y + radius * Math.sin(angle);
-			context.beginPath();
-			context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
-			var col = hashString(beacon.id) % 5;
-			var alpha = 0.5 + 0.5 * Math.max(0, 1 - (new Date().getTime() - beacon.lastSeen)/600000);
-			context.fillStyle = colorAlpha(col, alpha);
-			context.fill();
+			if (beacon.icon && beacon.icon.length > 0) {
+				context.drawImage($('#' + beacon.icon)[0], x2 - DOT_RADIUS, y2 - DOT_RADIUS, DOT_RADIUS * 2, DOT_RADIUS * 2);
+			} else {
+				context.beginPath();
+				context.ellipse(x2, y2, DOT_RADIUS, DOT_RADIUS, 0, 0, Math.PI * 2, false);
+				var col = hashString(beacon.id) % 5;
+				var alpha = 0.5 + 0.5 * Math.max(0, 1 - (new Date().getTime() - beacon.lastSeen) / 600000);
+				context.fillStyle = colorAlpha(col, alpha);
+				context.fill();
+			}
 			this.beaconLocations[beacon.id] = {
 				x: x2,
 				y: y2

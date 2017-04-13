@@ -66,6 +66,19 @@
 					<label>Time Last Seen</label>
 					<input disabled type="text" name="broadcaster" ng-value="localCopy.lastSeen | date:'medium'">
 				</md-input-container>
+				<br>
+				<md-input-container flex>
+					<label>Icon</label>
+					<md-select ng-model="localCopy.icon">
+						<md-option ng-value="">
+							None
+						</md-option>
+						<md-option ng-repeat="icon in icons" ng-value="icon">
+							<img ng-src="images/{{icon}}.png" width="16px" height="16px">
+						</md-option>
+					</md-select>
+				</md-input-container>
+				<br>
 				<md-button class="md-warn md-raised" ng-click="deleteBeacon(localCopy.id)">Delete</md-button>
 				<md-button class="md-raised" ng-click="postBeacon(localCopy)">Update{{wasModified(selectedBeacon) ? '*' : ''}}</md-button>
 			</div>

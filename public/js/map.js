@@ -43,6 +43,12 @@
         //display nothing in the sidenav
         $scope.state = 'pristine';
 
+        $scope.icons = [
+            "calculator",
+            "person",
+            "document"
+        ]
+
         //sets the rendering callback for restful requests to update the maps
         renderCallback = function() {
             beaconMap.render(context);
